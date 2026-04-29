@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>MutKent | Şehir Portalı & Akıllı Ulaşım</title>
+  <title>MutKent | Akıllı Şehir & Ulaşım Portalı</title>
   
   <meta name="theme-color" content="#F97316">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/mapbox-gl@3.3.0/dist/mapbox-gl.css" rel="stylesheet" />
   
   <style>
     :root {
       --kayisi: #F97316; 
       --zeytin-derin: #0F1F14; 
-      --zeytin-kart: rgba(26, 46, 31, 0.9);
+      --zeytin-kart: rgba(26, 46, 31, 0.85);
       --metin: #F8FAFC;
       --metin-soluk: #94A3B8;
       --border: rgba(249, 115, 22, 0.2);
@@ -21,23 +21,30 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Space Grotesk', sans-serif; background-color: var(--zeytin-derin); color: var(--metin); overflow: hidden; height: 100vh; position: relative; }
+
+    /* KÜLTÜREL ÇİZİMLER (Sabit) */
+    .kultur-cizim { position: fixed; top: 25%; height: 50vh; width: 15vw; opacity: 0.12; pointer-events: none; z-index: 0; stroke: var(--kayisi); fill: none; stroke-width: 1.5; }
+    .cizim-sol { left: 2%; }
+    .cizim-sag { right: 2%; }
+
+    /* SABİT REKLAM ALANLARI */
+    .reklam-alani { position: fixed; bottom: 80px; width: 16vw; max-width: 150px; height: 160px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 15px; color: var(--metin-soluk); font-size: 11px; z-index: 5; }
+    .reklam-sol { left: 2%; }
+    .reklam-sag { right: 2%; }
+    .reklam-alani span { font-size: 20px; color: var(--kayisi); margin-bottom: 5px; opacity: 0.5;}
+
+    /* YENİ NESİL SABİT BİLGİ PANELLERİ (Hava Durumu ve Duyuru) */
+    .sabit-panel { position: fixed; top: 12%; width: 18vw; background: rgba(254, 243, 199, 0.95); color: #78350F; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 5; line-height: 1.6; border-left: 5px solid var(--kayisi); font-size: 13px; }
+    .panel-sol { left: 2%; }
+    .panel-sag { right: 2%; }
     
-    body { 
-      font-family: 'Space Grotesk', sans-serif; 
-      background-color: var(--zeytin-derin); 
-      color: var(--metin); 
-      overflow: hidden; 
-    }
+    .panel-baslik { font-size: 16px; font-weight: 700; margin-bottom: 12px; border-bottom: 1px solid rgba(120, 53, 15, 0.2); padding-bottom: 8px; color: #92400E; display: flex; align-items: center; gap: 6px;}
+    .hd-madde { margin-bottom: 8px; font-weight: 500; }
+    .hd-madde strong { font-weight: 700; color: #451A03; }
+    .hd-uyari { background: rgba(220, 38, 38, 0.15); color: #B91C1C; padding: 8px 12px; border-radius: 6px; font-weight: 700; border-left: 3px solid #DC2626; margin-top: 10px; font-size: 12px;}
 
-    /* KÜLTÜREL ÇİZİMLER & NOTLAR (Sabit Arka Plan) */
-    .kultur-cizim { position: fixed; top: 20%; height: 50vh; width: 18vw; opacity: 0.15; pointer-events: none; z-index: 0; stroke: var(--kayisi); fill: none; stroke-width: 1.5; }
-    .cizim-sol { left: 1%; }
-    .cizim-sag { right: 1%; }
-
-    .duyuru-notu { position: fixed; top: 12%; width: 16vw; background: #FEF3C7; color: #92400E; padding: 12px; font-size: 12px; font-weight: 600; border-radius: 4px; box-shadow: 2px 4px 15px rgba(0,0,0,0.4); z-index: 5; line-height: 1.4; text-align: center; }
-    .not-sol { left: 2%; transform: rotate(-3deg); }
-    .not-sag { right: 2%; transform: rotate(3deg); }
-    @media (max-width: 1024px) { .kultur-cizim, .duyuru-notu { display: none; } }
+    @media (max-width: 1150px) { .kultur-cizim, .sabit-panel, .reklam-alani { display: none; } }
 
     /* UYGULAMA İSKELETİ (SPA) */
     .app-container { height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 10; }
@@ -45,113 +52,256 @@
     .content-area.active { display: block; animation: fadeIn 0.4s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* HEADER */
-    header { padding: 15px 5%; background: rgba(15, 31, 20, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    /* HEADER & WEB NAVİGASYON */
+    header { padding: 12px 5%; background: rgba(15, 31, 20, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; z-index: 100; border-bottom: 1px solid var(--border);}
     .mutkent-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--metin); letter-spacing: 1px; }
     .mutkent-logo span { color: var(--kayisi); }
+    .nav-container { display: none; } 
     .weather-mini { font-size: 12px; text-align: right; color: var(--metin-soluk); line-height: 1.3; }
 
-    /* KOOPERATİF BAŞLIĞI (Seferler Ekranı) */
-    .koop-title { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 18px; font-weight: 700; color: var(--kayisi); padding: 20px 10px 10px; line-height: 1.3; }
+    /* KOOPERATİF BAŞLIĞI */
+    .koop-title { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 15px; font-weight: 600; color: var(--kayisi); letter-spacing: 2px; text-transform: uppercase; padding: 25px 10px 15px; line-height: 1.4;}
+
+    /* PLAKA ARAMA ALANI */
+    .arama-konteyner { display: flex; flex-direction: column; gap: 10px; margin: 0 5% 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+    .arama-satiri { display: flex; gap: 10px; }
+    .arama-kutu { flex: 1; padding: 14px 20px; border-radius: 10px; border: 1px solid var(--border); background: rgba(255,255,255,0.03); color: var(--metin); font-size: 14px; transition: var(--gecis); text-align: center;}
+    .arama-kutu:focus { border-color: var(--kayisi); background: rgba(255,255,255,0.06); }
+    .plaka-btn { background: var(--kayisi); color: #000; border: none; padding: 0 25px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: var(--gecis); white-space: nowrap;}
+    .plaka-btn:hover { background: #ea580c; }
+    
+    #plakaSonuc { display: none; background: rgba(168, 85, 247, 0.1); border: 1px solid #A855F7; border-radius: 10px; padding: 20px; font-size: 14px; margin-top: 5px; color: var(--metin);}
+    #plakaSonuc h4 { color: #A855F7; margin-bottom: 15px; font-size: 16px; border-bottom: 1px solid rgba(168, 85, 247, 0.3); padding-bottom: 8px;}
+    #plakaSonuc li { margin-bottom: 8px; display: flex; align-items: center; gap: 8px;}
 
     /* GÜNLER TABI */
-    .gunler { display: flex; gap: 8px; overflow-x: auto; padding: 10px 5% 20px; scrollbar-width: none; justify-content: center; }
+    .gunler { display: flex; gap: 8px; overflow-x: auto; padding: 5px 5% 25px; scrollbar-width: none; justify-content: center; }
     .gunler::-webkit-scrollbar { display: none; }
-    .gun-btn { padding: 10px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--zeytin-kart); color: var(--metin-soluk); cursor: pointer; font-weight: 500; white-space: nowrap; transition: var(--gecis); font-family: inherit; }
-    .gun-btn.aktif { background: var(--kayisi); color: #000; font-weight: 700; border-color: var(--kayisi); }
+    .gun-btn { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: var(--zeytin-kart); color: var(--metin-soluk); cursor: pointer; font-weight: 500; transition: var(--gecis); font-family: inherit; white-space: nowrap;}
+    .gun-btn.aktif { background: var(--kayisi); color: #000; font-weight: 700; box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); border-color: var(--kayisi);}
 
-    /* HAT KARTLARI (Tüm içerikler ortalandı) */
-    .hat-kart { background: var(--zeytin-kart); border-radius: 16px; margin: 0 5% 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; text-align: center; padding-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
-    .easter-egg { position: absolute; right: 20px; bottom: 10px; font-size: 45px; opacity: 0.2; pointer-events: none; z-index: 1; }
+    /* KART TASARIMLARI (Tam Ortalanmış) */
+    .hat-kart { background: var(--zeytin-kart); border-radius: 16px; margin: 0 5% 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; text-align: center; padding-bottom: 25px; max-width: 800px; margin-left: auto; margin-right: auto; }
+    .easter-egg { position: absolute; right: 20px; bottom: 15px; font-size: 50px; opacity: 0.2; pointer-events: none; z-index: 1; }
     
-    .kart-ust { padding: 20px 20px 10px; }
-    .hat-adi { font-size: 24px; font-weight: 700; color: var(--metin); margin-bottom: 5px; }
-    .guzergah { font-size: 13px; color: var(--metin-soluk); }
+    .kart-ust { padding: 25px 20px 15px; display: flex; flex-direction: column; align-items: center; }
+    .hat-adi { font-size: 24px; font-weight: 700; color: var(--metin); margin-bottom: 8px; }
+    .guzergah { font-size: 13px; color: var(--metin-soluk); margin-bottom: 15px; line-height: 1.6; max-width: 80%;}
+    
+    .harita-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--kayisi); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--gecis); display: inline-flex; align-items: center; gap: 6px;}
+    .harita-btn:hover { background: var(--kayisi); color: #000; }
 
-    /* SAATLER VE PLAKA */
-    .saat-grid { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 20px; justify-content: center; position: relative; z-index: 2; }
-    .saat-wrapper { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-    
-    .saat-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 8px; color: var(--metin); font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--gecis); min-width: 75px; text-align: center; }
+    /* SAATLER & PLAKA AÇILIR MENÜSÜ */
+    .saat-grid { display: flex; flex-wrap: wrap; gap: 12px; padding: 10px 20px 0; justify-content: center; position: relative; z-index: 2; }
+    .saat-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .saat-btn { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px 18px; border-radius: 8px; color: var(--metin); font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--gecis); min-width: 75px; text-align: center;}
     .saat-btn:hover { background: rgba(249, 115, 22, 0.15); }
     
-    /* AKILLI IŞIK (GLOW) */
+    /* AKILLI IŞIKLAR */
     .saat-btn.yaklasan { border-color: var(--kayisi); color: var(--kayisi); animation: glow 1.5s infinite alternate; }
     @keyframes glow { from { box-shadow: 0 0 5px rgba(249, 115, 22, 0.3); } to { box-shadow: 0 0 15px rgba(249, 115, 22, 0.8); } }
+    
+    .saat-btn.plaka-eslesti { border-color: #A855F7; color: #A855F7; animation: glow-purple 1.5s infinite alternate; }
+    @keyframes glow-purple { from { box-shadow: 0 0 5px rgba(168, 85, 247, 0.3); } to { box-shadow: 0 0 15px rgba(168, 85, 247, 0.8); } }
 
-    .plaka-info { display: none; background: var(--kayisi); color: #000; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 4px; animation: fadeIn 0.2s ease; letter-spacing: 1px; white-space: nowrap; }
+    .plaka-info { display: none; background: var(--kayisi); color: #000; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 4px; animation: fadeIn 0.2s ease; letter-spacing: 1px;}
 
-    /* ŞEHİR PORTALI EKRANI */
-    .portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; padding: 0 5%; max-width: 800px; margin: 0 auto; }
-    .portal-card { background: var(--zeytin-kart); border-radius: 12px; padding: 20px; border-top: 4px solid var(--kayisi); text-align: center; }
-    .portal-card h4 { font-size: 14px; color: var(--kayisi); margin-bottom: 10px; }
-    .portal-card p { font-size: 12px; color: var(--metin-soluk); line-height: 1.5; }
+    /* ŞEHİR PORTALI (Akordiyon) */
+    .portal-list { padding: 0 5%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px; }
+    details { background: var(--zeytin-kart); border-radius: 12px; border-left: 4px solid var(--kayisi); overflow: hidden; }
+    summary { padding: 20px; font-size: 16px; font-weight: 600; color: var(--kayisi); cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    summary::-webkit-details-marker { display: none; }
+    summary::after { content: '+'; font-size: 24px; color: var(--metin-soluk); transition: 0.3s; }
+    details[open] summary::after { transform: rotate(45deg); color: var(--kayisi); }
+    .detay-icerik { padding: 0 20px 20px; font-size: 14px; color: var(--metin-soluk); line-height: 1.7; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 5px; padding-top: 15px;}
+    .detay-icerik strong { color: var(--metin); }
+    
+    .tarihi-img { width: 100%; height: 180px; background: rgba(0,0,0,0.3); border-radius: 8px; margin: 15px 0; display: flex; align-items: center; justify-content: center; font-size: 40px; border: 1px dashed var(--border);}
 
-    /* BOTTOM NAV (SPA) */
+    /* HARİTA EKRANI */
+    .harita-layout { display: flex; flex-direction: column; height: calc(100vh - 190px); max-width: 1000px; margin: 0 auto; padding: 15px 5%; gap: 15px; }
+    .harita-lejant { background: var(--zeytin-kart); padding: 15px; border-radius: 12px; display: flex; flex-wrap: wrap; gap: 10px; border: 1px solid var(--border); overflow-y: auto; max-height: 200px;}
+    .lejant-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--metin); background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; cursor: pointer; transition: var(--gecis); width: calc(50% - 5px); }
+    .lejant-item:hover { background: rgba(249, 115, 22, 0.15); border-color: var(--kayisi); }
+    .kod-badge { background: var(--kayisi); color: #000; font-weight: 800; padding: 4px 8px; border-radius: 4px; font-size: 11px; }
+    #map { flex: 1; border-radius: 15px; border: 1px solid var(--border); }
+    .map-marker { transition: box-shadow 0.3s ease; border: 2px solid white; cursor: pointer;}
+    .mapboxgl-popup-content { background: var(--zeytin-derin); color: var(--metin); border: 1px solid var(--kayisi); border-radius: 8px; font-family: 'Space Grotesk', sans-serif;}
+
+    /* NAVİGASYON (Mobil Bottom Nav / Web Üst Nav) */
     .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0a140d; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
-    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--metin-soluk); cursor: pointer; transition: 0.3s; background: transparent; border: none; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--metin-soluk); cursor: pointer; transition: 0.3s; background: none; border: none; font-family: inherit;}
     .nav-item.active { color: var(--kayisi); transform: translateY(-2px); }
-    .nav-item i { font-size: 22px; font-style: normal; }
-    .nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .nav-item i { font-size: 20px; font-style: normal; }
+    .nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
 
-    #map { width: 100%; height: 100%; border-radius: 15px; }
-    @media (max-width: 768px) { .gunler { justify-content: flex-start; } }
+    @media (min-width: 850px) {
+      .bottom-nav { display: none; } 
+      .nav-container { display: flex; gap: 10px; } 
+      .nav-item { flex-direction: row; padding: 10px 15px; background: rgba(255,255,255,0.05); border-radius: 8px; }
+      .nav-item.active { background: rgba(249, 115, 22, 0.15); border: 1px solid var(--kayisi); transform: none; }
+      .nav-item i { font-size: 16px; }
+      .nav-item span { font-size: 12px; }
+      .content-area { padding-bottom: 40px; }
+      .lejant-item { width: auto; }
+      .weather-mini { display: none; } /* Webde panel var zaten */
+    }
+    @media (max-width: 768px) { .gunler { justify-content: flex-start; } .lejant-item { width: 100%; } }
   </style>
 </head>
 <body>
 
-  <div class="duyuru-notu not-sol">📌 <strong>Öğrenci Bilgilendirme</strong><br>Sınav haftası boyunca KYK Yurt seferleri gece 23:00'a kadar uzatılmıştır.</div>
+  <div class="sabit-panel panel-sol">
+    <div class="panel-baslik">🌦️ Hava Durumu ve Ziraat</div>
+    <div class="hd-madde">☀️ <strong>Sıcaklık:</strong> 26°C (Açık ve Güneşli)</div>
+    <div class="hd-madde">💧 <strong>Yağış:</strong> %0 (Yağmur beklenmiyor)</div>
+    <div class="hd-madde">💨 <strong>Rüzgar:</strong> 12 km/s (Poyraz yönü)</div>
+    <div class="hd-uyari">⚠️ <strong>Zirai Don Uyarısı:</strong> Gece saatlerinde sıcaklık aniden düşecektir. Zirai don riski yüksektir, tarlada önlem alınız!</div>
+  </div>
   <svg class="kultur-cizim cizim-sol" viewBox="0 0 100 200">
     <path d="M10,180 L10,100 L20,100 L20,110 L30,110 L30,100 L40,100 L40,110 L50,110 L50,100 L60,100 L60,180 Z" />
     <path d="M15,130 A10,10 0 0,1 35,130 L35,180 L15,180 Z" />
     <circle cx="80" cy="130" r="4" />
   </svg>
 
-  <div class="duyuru-notu not-sag">📌 <strong>Halk Pazarı</strong><br>Cuma günleri kurulan Merkez Pazarı nedeniyle Sakız hattı çevre yolunu kullanacaktır.</div>
+  <div class="sabit-panel panel-sag">
+    <div class="panel-baslik">📢 Şehir Duyuruları</div>
+    <div class="hd-madde"><strong>Belediye Yol Çalışması:</strong> Meydan kavşağında 14:00-16:00 arası bakım yapılacaktır. Bu güzergahtaki seferlerde 5-10 dk gecikme yaşanabilir. Anlayışınız için teşekkür ederiz.</div>
+    <div class="hd-madde" style="margin-top:15px;"><strong>Üniversite Seferleri:</strong> Sınav haftası nedeniyle MYO Kampüs seferleri gece 23:00'a kadar uzatılmıştır.</div>
+  </div>
   <svg class="kultur-cizim cizim-sag" viewBox="0 0 100 200">
     <path d="M80,20 Q60,50 80,80 T70,140 T90,180" />
     <path d="M90,30 Q70,60 90,90 T80,150" />
     <path d="M20,150 Q40,140 60,150 T90,140" stroke-dasharray="4,4"/>
   </svg>
 
+  <div class="reklam-alani reklam-sol"><span>AD</span>Yerel İşletmeniz<br>İçin Sponsor Alanı</div>
+  <div class="reklam-alani reklam-sag"><span>AD</span>Yerel İşletmeniz<br>İçin Sponsor Alanı</div>
+
   <div class="app-container">
     <header>
       <div class="mutkent-logo">MUT<span>KENT</span></div>
-      <div class="weather-mini">Mersin, Mut<br><strong style="color:var(--metin)">24°C Parçalı Bulutlu</strong></div>
+      
+      <nav class="nav-container">
+        <button class="nav-item active" onclick="switchView('seferler', this)"><i>🚍</i><span>Seferler</span></button>
+        <button class="nav-item" onclick="switchView('rehber', this)"><i>🏢</i><span>Şehir Panosu</span></button>
+        <button class="nav-item" onclick="switchView('tarihi', this)"><i>🏺</i><span>Tarihi Yerler</span></button>
+        <button class="nav-item" onclick="switchView('harita', this)"><i>📍</i><span>Harita</span></button>
+        <button class="nav-item" onclick="switchView('iletisim', this)"><i>📞</i><span>İletişim</span></button>
+      </nav>
+
+      <div class="weather-mini">Mersin, Mut<br><strong style="color:var(--metin)">26°C Açık</strong></div>
     </header>
 
     <div id="view-seferler" class="content-area active">
-      <div class="koop-title">S.S. 85 NOLU MUTLULAR OTOBÜS<br>MİNİBÜS VE TAŞIYICILAR KOOPERATİFİ</div>
       
-      <nav class="gunler" id="gunSecici"></nav>
+      <div class="koop-title">S.S. 85 NOLU MUTLULAR OTOBÜS MİNİBÜS VE TAŞIYICILAR KOOPERATİFİ</div>
+      
+      <div class="arama-konteyner">
+        <div class="arama-satiri">
+          <input type="text" id="searchInput" class="arama-kutu" placeholder="Hat veya Durak Ara (Örn: Hastane)..." onkeyup="arama()">
+        </div>
+        <div class="arama-satiri">
+          <input type="text" id="plakaInput" class="arama-kutu" placeholder="Araç Plakası Sorgula (Örn: 33 C 70 42)...">
+          <button class="plaka-btn" onclick="plakaSorgula()">Bul</button>
+        </div>
+        <div id="plakaSonuc"></div>
+      </div>
 
+      <nav class="gunler" id="gunSecici"></nav>
       <div id="hatKonteyner"></div>
     </div>
 
     <div id="view-rehber" class="content-area">
-      <h2 style="text-align: center; color: var(--kayisi); padding: 25px; font-family: 'Cormorant Garamond', serif; font-size: 28px;">Mut Şehir Portalı</h2>
-      <div class="portal-grid">
-        <div class="portal-card">
-          <h4>🏥 Nöbetçi Eczane</h4>
-          <p><strong>Şifa Eczanesi</strong><br>Devlet Hastanesi Karşısı<br>Açık: 24 Saat</p>
+      <h2 style="text-align: center; color: var(--kayisi); padding: 25px; font-family: 'Cormorant Garamond', serif; font-size: 32px;">Mut Şehir Panosu</h2>
+      <div class="portal-list">
+        
+        <details>
+          <summary>🏥 Nöbetçi Eczaneler (Bugün)</summary>
+          <div class="detay-icerik">
+            <strong>Şifa Eczanesi</strong><br>Adres: Devlet Hastanesi Karşısı<br>
+            <button class="harita-btn" style="margin-top:10px;" onclick="haritadaGoster('E1')">📍 Haritada Konumunu Gör</button><br><br>
+            <strong>Merkez Eczanesi</strong><br>Adres: Hükümet Konağı Arkası<br>
+            <button class="harita-btn" style="margin-top:10px;" onclick="haritadaGoster('E2')">📍 Haritada Konumunu Gör</button>
+          </div>
+        </details>
+
+        <details>
+          <summary>👨‍⚕️ Devlet Hastanesi Poliklinik Listesi</summary>
+          <div class="detay-icerik">
+            <strong>Dahiliye:</strong> Dr. Ahmet Yılmaz<br>
+            <strong>Göz Hastalıkları:</strong> Dr. Selin B.<br>
+            <button class="harita-btn" style="margin-top:10px;" onclick="haritadaGoster('H1')">📍 Hastaneyi Haritada Gör</button>
+          </div>
+        </details>
+
+        <details>
+          <summary>🛒 Market İndirim Afişleri (Aktüel)</summary>
+          <div class="detay-icerik">
+            <strong>BİM (Cuma):</strong> Elektronik ve mutfak gereçlerinde %20 indirim.<br>
+            <strong>A101 (Perşembe):</strong> Temel gıda ürünleri ve zeytinyağı fırsatları.
+          </div>
+        </details>
+
+      </div>
+    </div>
+
+    <div id="view-tarihi" class="content-area">
+      <h2 style="text-align: center; color: var(--kayisi); padding: 25px; font-family: 'Cormorant Garamond', serif; font-size: 32px;">Turlar ve Tarihi Yerler</h2>
+      <div class="portal-list">
+        
+        <div class="hat-kart">
+          <div class="kart-ust">
+            <h4 class="hat-adi">Mut Kalesi</h4>
+            <div class="tarihi-img">🏰</div>
+            <p class="guzergah" style="color:var(--metin)">Kale, dış ve iç olmak üzere iç içe iki kısımdan ibarettir. Kalenin dokuz tane burcu olmasına rağmen bu gün dört tanesi kalmıştır. [cite: 39, 42]</p>
+            <button class="harita-btn" onclick="haritadaGoster('T1')">📍 Haritada Konumunu Gör</button>
+          </div>
         </div>
-        <div class="portal-card">
-          <h4>👨‍⚕️ Hastane Panosu</h4>
-          <p><strong>Bu Hafta Poliklinik</strong><br>Dahiliye: Dr. Ahmet Yılmaz<br>Göz: Dr. Selin B.</p>
+
+        <div class="hat-kart">
+          <div class="kart-ust">
+            <h4 class="hat-adi">Alahan Manastırı</h4>
+            <div class="tarihi-img">🏛️</div>
+            <p class="guzergah" style="color:var(--metin)">Orta Toroslarda 1300 m. yükseklikte ve Göksu Vadisine bakan dik bir yamaca oturtulmuştur. M.S. 440-442 yıllarında yapılmış olduğu tahmin edilen Alahan Manastır Külliyesi, Batı Kilisesi, Manastır, Doğu Kilisesinden oluşmaktadır. [cite: 46, 47, 48]</p>
+            <button class="harita-btn" onclick="haritadaGoster('T2')">📍 Haritada Konumunu Gör</button>
+          </div>
         </div>
-        <div class="portal-card">
-          <h4>🛒 Market Aktüel</h4>
-          <p>BİM Cuma: Teknolojik Ürünler<br>A101 Perşembe: Mutfak Gereçleri<br>ŞOK: Hafta Sonu İndirimi</p>
+
+        <div class="hat-kart">
+          <div class="kart-ust">
+            <h4 class="hat-adi">Kilisetepe Höyüğü</h4>
+            <div class="tarihi-img">🏺</div>
+            <p class="guzergah" style="color:var(--metin)">Mut İlçe merkezinin yaklaşık 19 kilometre güney doğusunda Kışla Köyü sınırları içindedir. [cite: 62] Elde edilen buluntulardan hareketle Kilisetepe'nin günümüzden yaklaşık 7000 yıl önce bir yerleşim yeri olduğu tespit edilmiştir. [cite: 63]</p>
+            <button class="harita-btn" onclick="haritadaGoster('T4')">📍 Haritada Konumunu Gör</button>
+          </div>
         </div>
-        <div class="portal-card">
-          <h4>🎓 Öğrenci Köşesi</h4>
-          <p><strong>MYO Yemekhane:</strong><br>Ezogelin, Taze Fasulye<br>Kütüphane Açılış: 08:30</p>
+
+        <div class="hat-kart">
+          <div class="kart-ust">
+            <h4 class="hat-adi">Balabolu Harabeleri</h4>
+            <div class="tarihi-img">🏛️</div>
+            <p class="guzergah" style="color:var(--metin)">Mut'un batısında, 40 kilometre uzaklıkta Yalnızcabağ Köyü yakınlarında Değirmenlik Yaylası'ndadır. [cite: 83] Büyük bir antik yerleşim alanı olduğu görülmektedir. [cite: 84] Erken Roma ve Bizans dönemlerine aittir. [cite: 85]</p>
+            <button class="harita-btn" onclick="haritadaGoster('T6')">📍 Haritada Konumunu Gör</button>
+          </div>
         </div>
+
+        <div class="hat-kart">
+          <div class="kart-ust">
+            <h4 class="hat-adi">Mavga Kalesi</h4>
+            <div class="tarihi-img">⛰️</div>
+            <p class="guzergah" style="color:var(--metin)">Mut' a yaklaşık 16 km. uzaklıkta olup, Kozlar Yaylası yakınındadır. [cite: 65] Sağlam kalan tek burcundaki kitabeye göre Alaattin Keykubat'ın emri üzerine 1230 yıllarında Mimar Tuğrul tarafından yapılmıştır. [cite: 66]</p>
+            <button class="harita-btn" onclick="haritadaGoster('T5')">📍 Haritada Konumunu Gör</button>
+          </div>
+        </div>
+
       </div>
     </div>
 
     <div id="view-harita" class="content-area">
-      <div style="height: calc(100vh - 160px); padding: 20px 5%; max-width: 800px; margin: 0 auto;">
+      <div class="harita-layout">
+        <div class="harita-lejant" id="haritaLejant">
+          </div>
         <div id="map"></div>
       </div>
     </div>
@@ -172,6 +322,7 @@
     <nav class="bottom-nav">
       <button class="nav-item active" onclick="switchView('seferler', this)"><i>🚍</i><span>Seferler</span></button>
       <button class="nav-item" onclick="switchView('rehber', this)"><i>🏢</i><span>Şehir</span></button>
+      <button class="nav-item" onclick="switchView('tarihi', this)"><i>🏺</i><span>Tarihi</span></button>
       <button class="nav-item" onclick="switchView('harita', this)"><i>📍</i><span>Harita</span></button>
       <button class="nav-item" onclick="switchView('iletisim', this)"><i>📞</i><span>İletişim</span></button>
     </nav>
@@ -179,60 +330,79 @@
 
   <script src="https://cdn.jsdelivr.net/npm/mapbox-gl@3.3.0/dist/mapbox-gl.js"></script>
   <script>
-    // 1. HASTANE SAATLERİNİ OTOMATİK ÜRETEN ALGORİTMA
+    // 1. HASTANE SAATLERİ (Sadece Hafta İçi İçin)
     const HASTANE_SAATLERI = [];
-    for(let h=7; h<12; h++) {
-      for(let m=0; m<60; m+=15) HASTANE_SAATLERI.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`);
-    }
-    for(let h=12; h<=18; h++) {
-      for(let m=0; m<60; m+=30) HASTANE_SAATLERI.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`);
-    }
+    for(let h=7; h<12; h++) for(let m=0; m<60; m+=15) HASTANE_SAATLERI.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`);
+    for(let h=12; h<=18; h++) for(let m=0; m<60; m+=30) HASTANE_SAATLERI.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`);
 
-    // 2. VERİTABANI (Her güne özel dizi ile tasarlandı)
+    // 2. VERİTABANI VE LOKASYONLAR
     const HAT_VERILERI = [
-      {
-        id: 1, ad: "Hastane - Otogar", guzergah: "Hastane ➔ Çarşı ➔ Terminal ➔ Otogar", icon: "🚑",
+      { id: 1, ad: "Hastane - Otogar", guzergah: "Hastane ➔ Çarşı ➔ Terminal ➔ Otogar", icon: "🚑", kod: "H1", koordinat: [33.4400, 36.6500],
         saatler: { "Pazartesi": HASTANE_SAATLERI, "Salı": HASTANE_SAATLERI, "Çarşamba": HASTANE_SAATLERI, "Perşembe": HASTANE_SAATLERI, "Cuma": HASTANE_SAATLERI, "Cumartesi": [], "Pazar": [] }
       },
-      {
-        id: 2, ad: "Köselerli / Hocalı", guzergah: "Terminal ➔ Hastane ➔ Kurtsuyu ➔ Hocalı", icon: "🍑",
+      { id: 2, ad: "Köselerli / Hocalı", guzergah: "Terminal ➔ Hastane ➔ Kurtsuyu ➔ Hocalı", icon: "🍑", kod: "K1", koordinat: [33.4100, 36.6500],
         saatler: { "Pazartesi": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Salı": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Çarşamba": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Perşembe": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Cuma": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Cumartesi": ["08:00", "12:00", "16:00"], "Pazar": ["09:00", "15:00"] }
       },
-      {
-        id: 3, ad: "Sakız / İlice", guzergah: "Merkez ➔ Otogar ➔ Sakız Köyü", icon: "🫒",
+      { id: 3, ad: "Sakız / İlice", guzergah: "Merkez ➔ Otogar ➔ Sakız Köyü", icon: "🫒", kod: "S1", koordinat: [33.4500, 36.6300],
         saatler: { "Pazartesi": ["06:30", "10:00", "13:30", "16:30"], "Salı": ["06:30", "10:00", "13:30", "16:30"], "Çarşamba": ["06:30", "10:00", "13:30", "16:30"], "Perşembe": ["06:30", "10:00", "13:30", "16:30"], "Cuma": ["06:30", "10:00", "13:30", "16:30"], "Cumartesi": ["07:00", "16:30"], "Pazar": ["07:00", "16:30"] }
       },
-      {
-        id: 4, ad: "Yüksekokul / TOKİ", guzergah: "Terminal ➔ Lise ➔ TOKİ ➔ MYO", icon: "🟣",
-        saatler: { "Pazartesi": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Salı": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Çarşamba": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Perşembe": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Cuma": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Cumartesi": [], "Pazar": [] }
+      { id: 4, ad: "Yüksekokul / TOKİ", guzergah: "Terminal ➔ Lise ➔ TOKİ ➔ MYO", icon: "🟣", kod: "U1", koordinat: [33.4450, 36.6520],
+        saatler: { "Pazartesi": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Salı": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Çarşamba": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Perşembe": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Cuma": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Cumartesi": ["08:30", "12:30", "16:30"], "Pazar": ["09:30", "15:30"] }
       }
+    ];
+
+    const MAP_LOCATIONS = [
+      { c: [33.4400, 36.6500], code: 'H1', name: 'Devlet Hastanesi', color: '#EF4444' },
+      { c: [33.4380, 36.6450], code: 'E1', name: 'Şifa Eczanesi', color: '#10B981' },
+      { c: [33.4390, 36.6460], code: 'E2', name: 'Merkez Eczanesi', color: '#10B981' },
+      { c: [33.4378, 36.6478], code: 'O1', name: 'Otogar / Terminal', color: '#F97316' },
+      { c: [33.4450, 36.6520], code: 'U1', name: 'MYO Kampüs', color: '#8B5CF6' },
+      { c: [33.4100, 36.6500], code: 'K1', name: 'Köselerli', color: '#F59E0B' },
+      { c: [33.4500, 36.6300], code: 'S1', name: 'Sakız Köyü', color: '#3B82F6' },
+      { c: [33.4350, 36.6450], code: 'T1', name: 'Mut Kalesi', color: '#FCD34D' },
+      { c: [33.3500, 36.7800], code: 'T2', name: 'Alahan Manastırı', color: '#FCD34D' },
+      { c: [33.4400, 36.6300], code: 'T3', name: 'Karacaoğlan Anıtı', color: '#FCD34D' },
+      { c: [33.5800, 36.5500], code: 'T4', name: 'Kilisetepe Höyüğü', color: '#FCD34D' },
+      { c: [33.5500, 36.7000], code: 'T5', name: 'Mavga Kalesi', color: '#FCD34D' },
+      { c: [33.1500, 36.5200], code: 'T6', name: 'Balabolu Harabeleri', color: '#FCD34D' }
     ];
 
     const GUNLER = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
     let bugunIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
     let aktifGun = GUNLER[bugunIndex];
 
-    // 3. BAŞLATICI FONKSİYON
+    // PLAKA ALGORİTMASI
+    function plakaGetir(hatId, saat) {
+      let hash = 0; const str = hatId + saat;
+      for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      const num = Math.abs(hash % 51).toString().padStart(2, '0');
+      return `33 C 70${num}`;
+    }
+
+    // 3. BAŞLATICI VE ARAMA
     function init() {
-      // Gün butonlarını ekle
-      document.getElementById('gunSecici').innerHTML = GUNLER.map(g => 
-        `<button class="gun-btn ${g === aktifGun ? 'aktif' : ''}" onclick="gunDegistir('${g}')">${g}</button>`
-      ).join('');
-      renderHatlar();
-    }
-
-    function gunDegistir(gun) {
-      aktifGun = gun;
-      init();
-    }
-
-    // 4. YAKLAŞAN SAATİ BULMA ALGORİTMASI
-    function siradakiSaatiBul(gunSaatleri) {
-      if (aktifGun !== GUNLER[bugunIndex]) return null; // Sadece "bugün" ise çalışır
+      document.getElementById('gunSecici').innerHTML = GUNLER.map(g => `<button class="gun-btn ${g === aktifGun ? 'aktif' : ''}" onclick="gunDegistir('${g}')">${g}</button>`).join('');
       
+      document.getElementById('haritaLejant').innerHTML = MAP_LOCATIONS.map(loc => `
+        <div class="lejant-item" onclick="haritadaParlat('${loc.code}')">
+          <span class="kod-badge" style="background:${loc.color}; color:${loc.color==='#FCD34D'?'#000':'#fff'}">${loc.code}</span> ${loc.name}
+        </div>
+      `).join('');
+      
+      arama();
+    }
+    
+    function gunDegistir(gun) { 
+      aktifGun = gun; 
+      document.getElementById('plakaSonuc').style.display = 'none'; 
+      document.getElementById('plakaInput').value = '';
+      init(); 
+    }
+
+    function siradakiSaatiBul(gunSaatleri) {
+      if (aktifGun !== GUNLER[bugunIndex]) return null; 
       const simdi = new Date();
       const suAnDakika = (simdi.getHours() * 60) + simdi.getMinutes();
-
       for (let s of gunSaatleri) {
         const [h, m] = s.split(':').map(Number);
         if ((h * 60 + m) >= suAnDakika) return s;
@@ -240,87 +410,136 @@
       return null;
     }
 
-    // 5. KARTLARI ÇİZME VE ORTALAMA
-    function renderHatlar() {
+    function arama() {
+      const val = document.getElementById('searchInput').value.toLowerCase();
       const konteyner = document.getElementById('hatKonteyner');
-      let htmlContent = '';
-
-      HAT_VERILERI.forEach(hat => {
+      const filtrelenmis = HAT_VERILERI.filter(h => h.ad.toLowerCase().includes(val) || h.guzergah.toLowerCase().includes(val));
+      
+      let html = '';
+      filtrelenmis.forEach(hat => {
         const gunSaatleri = hat.saatler[aktifGun] || [];
-        
-        // Eğer o gün hiç saat yoksa (örn: Hastane hattı haftasonu), o kartı hiç çizme
         if (gunSaatleri.length === 0) return;
-
+        
         const siradakiSaat = siradakiSaatiBul(gunSaatleri);
+        
+        const saatHtml = gunSaatleri.map(s => `
+          <div class="saat-wrapper">
+            <button id="btn-${hat.id}-${s.replace(':','')}" class="saat-btn ${s === siradakiSaat ? 'yaklasan' : ''}" onclick="plakaGoster(this, ${hat.id}, '${s}')">${s}</button>
+            <div class="plaka-info"></div>
+          </div>
+        `).join('');
 
-        const saatHtml = gunSaatleri.map(s => {
-          const yaklasanClass = (s === siradakiSaat) ? 'yaklasan' : '';
-          return `
-            <div class="saat-wrapper">
-              <button class="saat-btn ${yaklasanClass}" onclick="plakaGoster(this)">${s}</button>
-              <div class="plaka-info"></div>
-            </div>
-          `;
-        }).join('');
-
-        htmlContent += `
+        html += `
           <div class="hat-kart">
             <div class="easter-egg">${hat.icon}</div>
             <div class="kart-ust">
               <div class="hat-adi">${hat.ad}</div>
               <div class="guzergah">${hat.guzergah}</div>
+              <button class="harita-btn" onclick="haritadaGoster('${hat.kod}')">📍 Güzergahı Haritada Gör</button>
             </div>
-            <div class="saat-grid">
-              ${saatHtml}
-            </div>
+            <div class="saat-grid">${saatHtml}</div>
           </div>
         `;
       });
-
-      if (htmlContent === '') {
-        htmlContent = `<p style="text-align:center; padding:20px; color:var(--metin-soluk);">Bu gün için planlanan sefer bulunmamaktadır.</p>`;
-      }
-
-      konteyner.innerHTML = htmlContent;
+      konteyner.innerHTML = html || `<p style="text-align:center; padding:20px; color:var(--metin-soluk);">Bu gün için sefer bulunmamaktadır.</p>`;
     }
 
-    // 6. PLAKA SİSTEMİ (33 C 7000 - 7050 Arası)
-    function plakaGoster(btn) {
+    function plakaGoster(btn, hatId, saat) {
       const info = btn.nextElementSibling;
-      
-      // Tıklanan hariç tüm açık plakaları kapat
-      document.querySelectorAll('.plaka-info').forEach(p => { 
-        if(p !== info) p.style.display = 'none'; 
-      });
-      
-      if (info.style.display === 'block') {
-        info.style.display = 'none';
-      } else {
-        if (!info.innerText) {
-          const rand = Math.floor(Math.random() * 51).toString().padStart(2, '0');
-          info.innerText = `33 C 70${rand}`;
-        }
+      document.querySelectorAll('.plaka-info').forEach(p => { if(p !== info) p.style.display = 'none'; });
+      if (info.style.display === 'block') { info.style.display = 'none'; } 
+      else {
+        info.innerText = plakaGetir(hatId, saat);
         info.style.display = 'block';
       }
     }
 
-    // 7. SPA GEÇİŞ (Menü Navigasyonu)
+    // 5. KUSURSUZ HAFTALIK PLAKA ARAMA (Boşluk duyarsız eşleşme)
+    function plakaSorgula() {
+      const arananBrut = document.getElementById('plakaInput').value.trim();
+      if(arananBrut.length < 4) return;
+      const aranan = arananBrut.replace(/\s+/g, '').toUpperCase();
+
+      document.querySelectorAll('.saat-btn').forEach(btn => btn.classList.remove('plaka-eslesti'));
+      let listeHtml = `<h4>🚗 ${arananBrut.toUpperCase()} Plakalı Aracın Tüm Seferleri</h4><ul style="list-style:none; margin-top:10px; display:flex; flex-direction:column; gap:8px;">`;
+      let bulundu = false;
+
+      HAT_VERILERI.forEach(hat => {
+        GUNLER.forEach(gun => {
+            const saatler = hat.saatler[gun] || [];
+            saatler.forEach(s => {
+              const uretilenPlaka = plakaGetir(hat.id, s).replace(/\s+/g, '');
+              if (uretilenPlaka === aranan) {
+                bulundu = true;
+                listeHtml += `<li>📅 <strong>${gun}</strong> ➔ 📍 ${hat.ad} Hattı (⏰ ${s})</li>`;
+                
+                // Eğer sefer aranan gündeyse, o butona Mor Glow (Işık) ekle
+                if(gun === aktifGun) {
+                    const btn = document.getElementById(`btn-${hat.id}-${s.replace(':','')}`);
+                    if(btn) btn.classList.add('plaka-eslesti'); 
+                }
+              }
+            });
+        });
+      });
+
+      listeHtml += `</ul>`;
+      const sonucDiv = document.getElementById('plakaSonuc');
+      sonucDiv.innerHTML = bulundu ? listeHtml : `<p style="color:var(--metin-soluk)">Sistemde <strong>${arananBrut.toUpperCase()}</strong> plakasına ait sefer kaydı bulunamadı. Lütfen plakayı (Örn: 33 C 7042) doğru yazdığınızdan emin olun.</p>`;
+      sonucDiv.style.display = 'block';
+    }
+
+    // 6. SPA GEÇİŞ VE MAPBOX ETKİLEŞİMİ
     let map = null;
+    const mapMarkers = {};
+
     function switchView(viewId, el) {
       document.querySelectorAll('.content-area').forEach(v => v.classList.remove('active'));
       document.getElementById('view-' + viewId).classList.add('active');
       
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      el.classList.add('active');
+      if(el) el.classList.add('active');
+      else {
+        const targetNavs = document.querySelectorAll(`[onclick="switchView('${viewId}', this)"]`);
+        targetNavs.forEach(nav => nav.classList.add('active'));
+      }
 
-      if(viewId === 'harita' && !map) {
-        mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
-        map = new mapboxgl.Map({ container: 'map', style: 'mapbox://styles/mapbox/dark-v11', center: [33.4378, 36.6478], zoom: 13, pitch: 45 });
-        new mapboxgl.Marker({ color: '#F97316' }).setLngLat([33.4378, 36.6478]).addTo(map);
+      if(viewId === 'harita' && !map) createMap();
+    }
+
+    function haritadaGoster(kod) {
+      switchView('harita');
+      setTimeout(() => haritadaParlat(kod), 500); 
+    }
+
+    function createMap() {
+      mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+      map = new mapboxgl.Map({ container: 'map', style: 'mapbox://styles/mapbox/dark-v11', center: [33.4378, 36.6478], zoom: 13, pitch: 45 });
+      
+      MAP_LOCATIONS.forEach(loc => {
+        const el = document.createElement('div');
+        el.className = 'kod-badge map-marker';
+        el.id = 'marker-' + loc.code;
+        el.style.backgroundColor = loc.color;
+        el.style.color = loc.color === '#FCD34D' ? '#000' : '#fff';
+        el.innerText = loc.code;
+        
+        const popup = new mapboxgl.Popup({ offset: 25 }).setText(loc.name);
+        mapMarkers[loc.code] = new mapboxgl.Marker(el).setLngLat(loc.c).setPopup(popup).addTo(map);
+      });
+    }
+
+    function haritadaParlat(kod) {
+      document.querySelectorAll('.map-marker').forEach(m => m.style.boxShadow = 'none');
+      const el = document.getElementById('marker-' + kod);
+      if(el && mapMarkers[kod]) {
+        el.style.boxShadow = '0 0 0 8px rgba(249, 115, 22, 0.6)';
+        map.flyTo({ center: mapMarkers[kod].getLngLat(), zoom: 15, pitch: 60 });
+        mapMarkers[kod].togglePopup();
       }
     }
 
-    init(); // Uygulamayı Başlat
+    init();
   </script>
 </body>
 </html>
