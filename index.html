@@ -1,657 +1,326 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="theme-color" content="#0e3d25"/>
-<meta name="description" content="Mut ilçesinin dijital merkezi — ulaşım, sağlık, hava durumu ve yerel bilgiler"/>
-<meta name="apple-mobile-web-app-capable" content="yes"/>
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<title>MutKent — Mut İlçesi Dijital Merkezi</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-<link href="https://cdn.jsdelivr.net/npm/mapbox-gl@3.3.0/dist/mapbox-gl.css" rel="stylesheet"/>
-<style>
-:root{
-  --yesil-derin:#0e3d25;--yesil:#1a6040;--yesil-acik:#2d8a5e;
-  --altin:#c4882e;--altin-parlak:#e8a83a;
-  --krem:#f6f0e4;--krem2:#ede4d0;--beyaz:#fdfaf5;
-  --koyu:#111810;--metin:#2c3a2d;--metin-acik:#5a6e5b;--metin-soluk:#8a9e8b;
-  --nav-h:60px;
-}
-*{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'DM Sans',sans-serif;background:var(--beyaz);color:var(--metin);overflow-x:hidden;}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>MutKent | Şehir Portalı & Akıllı Ulaşım</title>
+  
+  <meta name="theme-color" content="#F97316">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/mapbox-gl@3.3.0/dist/mapbox-gl.css" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --kayisi: #F97316; 
+      --zeytin-derin: #0F1F14; 
+      --zeytin-kart: rgba(26, 46, 31, 0.9);
+      --metin: #F8FAFC;
+      --metin-soluk: #94A3B8;
+      --border: rgba(249, 115, 22, 0.2);
+      --gecis: all 0.3s ease;
+    }
 
-/* ── NAV ── */
-nav{
-  position:sticky;top:0;z-index:300;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 24px;height:var(--nav-h);
-  background:rgba(253,250,245,0.96);
-  backdrop-filter:blur(16px);
-  -webkit-backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(196,136,46,0.15);
-}
-.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
-.nav-emblem{width:34px;height:34px;border-radius:50%;background:var(--yesil-derin);border:1.5px solid var(--altin);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.nav-emblem svg{width:16px;height:16px;fill:none;stroke:var(--altin-parlak);stroke-width:1.8;}
-.nav-name{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--yesil-derin);}
-.nav-sub{font-size:9px;color:var(--metin-soluk);letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;}
-.nav-links{display:flex;gap:22px;align-items:center;}
-.nav-links a{font-size:11px;color:var(--metin-acik);text-decoration:none;letter-spacing:1px;text-transform:uppercase;transition:color .2s;white-space:nowrap;}
-.nav-links a:hover{color:var(--yesil);}
-.nav-cta{font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:8px 16px;border-radius:4px;background:var(--yesil-derin);color:var(--krem);border:none;cursor:pointer;white-space:nowrap;}
-/* Hamburger */
-.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none;}
-.hamburger span{display:block;width:22px;height:2px;background:var(--yesil-derin);border-radius:2px;transition:all .3s;}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-.hamburger.open span:nth-child(2){opacity:0;}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-/* Mobil menü */
-.mobile-menu{
-  display:none;position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;z-index:299;
-  background:rgba(253,250,245,0.98);backdrop-filter:blur(16px);
-  flex-direction:column;padding:32px 24px;gap:0;
-  overflow-y:auto;
-}
-.mobile-menu.open{display:flex;}
-.mobile-menu a{
-  font-size:22px;font-family:'Cormorant Garamond',serif;font-weight:600;
-  color:var(--yesil-derin);text-decoration:none;
-  padding:16px 0;border-bottom:1px solid var(--krem2);
-  display:flex;align-items:center;justify-content:space-between;
-}
-.mobile-menu a:last-of-type{border-bottom:none;}
-.mobile-menu a svg{width:16px;height:16px;fill:none;stroke:var(--altin);stroke-width:2;}
-.mobile-cta{margin-top:28px;padding:14px;border-radius:6px;background:var(--yesil-derin);color:var(--krem);font-size:13px;letter-spacing:1px;text-transform:uppercase;text-align:center;border:none;cursor:pointer;width:100%;}
+    * { box-sizing: border-box; margin: 0; padding: 0; outline: none; -webkit-tap-highlight-color: transparent; }
+    
+    body { 
+      font-family: 'Space Grotesk', sans-serif; 
+      background-color: var(--zeytin-derin); 
+      color: var(--metin); 
+      overflow: hidden; 
+    }
 
-/* ── HERO ── */
-.hero{
-  position:relative;min-height:92vh;
-  display:flex;align-items:center;
-  background:var(--yesil-derin);overflow:hidden;
-}
-.hero-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 15% 70%,rgba(196,136,46,.10) 0%,transparent 55%),radial-gradient(ellipse at 75% 20%,rgba(45,138,94,.14) 0%,transparent 55%);}
-.hero-img-wrap{position:absolute;right:0;bottom:0;width:52%;height:88%;overflow:hidden;}
-.hero-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:left bottom;-webkit-mask-image:linear-gradient(to left,rgba(0,0,0,1) 25%,transparent 100%);mask-image:linear-gradient(to left,rgba(0,0,0,1) 25%,transparent 100%);}
-.hero-overlay{position:absolute;inset:0;background:linear-gradient(100deg,var(--yesil-derin) 40%,rgba(14,61,37,.65) 62%,transparent 80%);}
-.hero-content{position:relative;z-index:2;padding:0 48px;max-width:560px;animation:fadeUp 1.1s ease both;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
-.eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px;}
-.eyebrow-line{width:32px;height:1px;background:var(--altin);flex-shrink:0;}
-.eyebrow-text{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--altin-parlak);}
-.hero-h1{font-family:'Cormorant Garamond',serif;font-size:clamp(44px,7vw,72px);line-height:1.0;font-weight:700;color:#fff;margin-bottom:6px;}
-.hero-h1 em{color:var(--altin-parlak);font-style:italic;}
-.hero-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(18px,3vw,26px);font-weight:400;font-style:italic;color:rgba(255,255,255,.48);margin-bottom:20px;}
-.hero-desc{font-size:14px;line-height:1.8;color:rgba(255,255,255,.52);max-width:300px;margin-bottom:32px;}
-.hero-actions{display:flex;gap:10px;flex-wrap:wrap;}
-.btn-gold{padding:13px 24px;border-radius:5px;background:var(--altin);color:#fff;font-size:11px;letter-spacing:1.2px;text-transform:uppercase;font-weight:500;border:none;cursor:pointer;transition:background .2s;white-space:nowrap;}
-.btn-gold:hover{background:var(--altin-parlak);}
-.btn-outline{padding:12px 24px;border-radius:5px;background:transparent;color:rgba(255,255,255,.65);font-size:11px;letter-spacing:1.2px;text-transform:uppercase;border:1px solid rgba(255,255,255,.22);cursor:pointer;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap;}
-.btn-outline:hover{border-color:var(--altin);color:var(--altin-parlak);}
-.hero-stats{position:absolute;bottom:32px;left:48px;display:flex;gap:0;}
-.stat-item{padding:12px 24px;border-left:1px solid rgba(196,136,46,.28);}
-.stat-item:first-child{padding-left:0;border-left:none;}
-.stat-num{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--altin-parlak);line-height:1;}
-.stat-lbl{font-size:9px;color:rgba(255,255,255,.38);letter-spacing:1.2px;text-transform:uppercase;margin-top:3px;}
+    /* KÜLTÜREL ÇİZİMLER & NOTLAR (Sabit Arka Plan) */
+    .kultur-cizim { position: fixed; top: 20%; height: 50vh; width: 18vw; opacity: 0.15; pointer-events: none; z-index: 0; stroke: var(--kayisi); fill: none; stroke-width: 1.5; }
+    .cizim-sol { left: 1%; }
+    .cizim-sag { right: 1%; }
 
-/* ── ŞERIT ── */
-.serit{background:var(--altin);padding:10px 0;display:flex;justify-content:center;gap:36px;overflow:hidden;flex-wrap:nowrap;}
-.serit-item{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#fff;display:flex;align-items:center;gap:8px;opacity:.85;white-space:nowrap;}
-.serit-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.5);flex-shrink:0;}
+    .duyuru-notu { position: fixed; top: 12%; width: 16vw; background: #FEF3C7; color: #92400E; padding: 12px; font-size: 12px; font-weight: 600; border-radius: 4px; box-shadow: 2px 4px 15px rgba(0,0,0,0.4); z-index: 5; line-height: 1.4; text-align: center; }
+    .not-sol { left: 2%; transform: rotate(-3deg); }
+    .not-sag { right: 2%; transform: rotate(3deg); }
+    @media (max-width: 1024px) { .kultur-cizim, .duyuru-notu { display: none; } }
 
-/* ── HIZLI ERİŞİM (MOBİL İÇİN ÖNEMLİ) ── */
-.hizli-erisim{background:var(--beyaz);padding:28px 24px;}
-.hizli-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.hizli-btn{
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  padding:16px 8px;border-radius:12px;
-  background:var(--krem);border:1px solid var(--krem2);
-  text-decoration:none;cursor:pointer;border:none;
-  transition:background .2s, transform .15s;
-  -webkit-tap-highlight-color:transparent;
-}
-.hizli-btn:active{transform:scale(0.96);}
-.hizli-btn:hover{background:var(--krem2);}
-.hizli-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
-.hizli-icon svg{width:20px;height:20px;fill:none;stroke-width:1.8;}
-.hizli-lbl{font-size:11px;color:var(--metin);text-align:center;line-height:1.3;font-weight:500;}
+    /* UYGULAMA İSKELETİ (SPA) */
+    .app-container { height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 10; }
+    .content-area { flex: 1; overflow-y: auto; padding-bottom: 90px; display: none; }
+    .content-area.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ── BÖLÜM GENEL ── */
-section{padding:64px 48px;}
-.sec-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--altin);margin-bottom:10px;}
-.sec-title{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:var(--yesil-derin);line-height:1.1;margin-bottom:14px;}
-.sec-title em{font-style:italic;color:var(--altin);}
-.sec-desc{font-size:14px;line-height:1.8;color:var(--metin-acik);max-width:520px;}
+    /* HEADER */
+    header { padding: 15px 5%; background: rgba(15, 31, 20, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .mutkent-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--metin); letter-spacing: 1px; }
+    .mutkent-logo span { color: var(--kayisi); }
+    .weather-mini { font-size: 12px; text-align: right; color: var(--metin-soluk); line-height: 1.3; }
 
-/* ── KÜLTÜR ── */
-.kultur-section{background:var(--krem);display:grid;grid-template-columns:1fr 1fr;gap:0;}
-.kultur-left{padding:64px 48px;display:flex;flex-direction:column;justify-content:center;}
-.kultur-cards{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--krem2);}
-.kultur-card{background:var(--beyaz);padding:24px;transition:background .2s;}
-.kultur-card:hover{background:var(--krem);}
-.kultur-icon{width:34px;height:34px;border-radius:8px;background:var(--yesil-derin);display:flex;align-items:center;justify-content:center;margin-bottom:12px;}
-.kultur-icon svg{width:16px;height:16px;fill:none;stroke:var(--altin-parlak);stroke-width:1.6;}
-.kultur-card h4{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:600;color:var(--yesil-derin);margin-bottom:5px;}
-.kultur-card p{font-size:12px;line-height:1.7;color:var(--metin-acik);}
+    /* KOOPERATİF BAŞLIĞI (Seferler Ekranı) */
+    .koop-title { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 18px; font-weight: 700; color: var(--kayisi); padding: 20px 10px 10px; line-height: 1.3; }
 
-/* ── HAT SAATLERİ ── */
-.hatlar-section{background:#fff;}
-.gun-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
-.gun-tab{
-  padding:8px 16px;border-radius:20px;
-  border:1px solid var(--krem2);background:transparent;
-  font-size:12px;letter-spacing:.3px;color:var(--metin-acik);
-  cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;
-  min-height:36px;-webkit-tap-highlight-color:transparent;
-}
-.gun-tab.active{background:var(--yesil-derin);color:#fff;border-color:var(--yesil-derin);}
-.gun-tab:hover:not(.active){background:var(--krem);}
-.hatlar-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;}
-.hat-card{border:1px solid var(--krem2);border-radius:12px;overflow:hidden;background:#fff;transition:box-shadow .2s;}
-.hat-card:hover{box-shadow:0 4px 24px rgba(14,61,37,.08);}
-.hat-head{padding:14px 16px;background:var(--yesil-derin);}
-.hat-head h4{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:#fff;}
-.hat-head p{font-size:10px;color:rgba(255,255,255,.42);margin-top:2px;}
-.hat-sefer{display:flex;align-items:center;justify-content:space-between;padding:9px 16px;border-bottom:1px solid var(--krem);}
-.hat-sefer:last-child{border-bottom:none;}
-.sefer-saat{font-size:15px;font-weight:500;color:var(--yesil-derin);}
-.sefer-sofor{font-size:11px;color:var(--metin-acik);background:var(--krem);padding:2px 8px;border-radius:10px;}
-.hat-bos{padding:20px;text-align:center;font-size:12px;color:var(--metin-soluk);}
+    /* GÜNLER TABI */
+    .gunler { display: flex; gap: 8px; overflow-x: auto; padding: 10px 5% 20px; scrollbar-width: none; justify-content: center; }
+    .gunler::-webkit-scrollbar { display: none; }
+    .gun-btn { padding: 10px 20px; border-radius: 12px; border: 1px solid var(--border); background: var(--zeytin-kart); color: var(--metin-soluk); cursor: pointer; font-weight: 500; white-space: nowrap; transition: var(--gecis); font-family: inherit; }
+    .gun-btn.aktif { background: var(--kayisi); color: #000; font-weight: 700; border-color: var(--kayisi); }
 
-/* ── GALERİ ── */
-.galeri-section{background:#fff;padding:64px 48px;}
-.galeri-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:28px;}
-.galeri-img{width:100%;height:200px;object-fit:cover;border-radius:12px;border:1px solid var(--krem2);}
+    /* HAT KARTLARI (Tüm içerikler ortalandı) */
+    .hat-kart { background: var(--zeytin-kart); border-radius: 16px; margin: 0 5% 20px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; text-align: center; padding-bottom: 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
+    .easter-egg { position: absolute; right: 20px; bottom: 10px; font-size: 45px; opacity: 0.2; pointer-events: none; z-index: 1; }
+    
+    .kart-ust { padding: 20px 20px 10px; }
+    .hat-adi { font-size: 24px; font-weight: 700; color: var(--metin); margin-bottom: 5px; }
+    .guzergah { font-size: 13px; color: var(--metin-soluk); }
 
-/* ── REKLAM ── */
-.reklam-section{background:var(--krem);padding:40px 48px;}
-.reklam-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px;}
-.reklam-kare{height:140px;border:1.5px dashed rgba(196,136,46,.3);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:#fff;position:relative;cursor:pointer;transition:border-color .2s;}
-.reklam-kare:hover{border-color:var(--altin);}
-.reklam-no{position:absolute;top:8px;left:10px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--metin-soluk);}
-.reklam-kare p{font-size:11px;color:var(--metin-soluk);}
-.reklam-kare span{font-size:10px;color:var(--krem2);}
-.reklam-banner{height:72px;border:1.5px dashed rgba(196,136,46,.3);border-radius:10px;display:flex;align-items:center;justify-content:center;gap:10px;background:#fff;margin-top:14px;cursor:pointer;}
-.reklam-banner p{font-size:12px;color:var(--metin-soluk);}
+    /* SAATLER VE PLAKA */
+    .saat-grid { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 20px; justify-content: center; position: relative; z-index: 2; }
+    .saat-wrapper { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    
+    .saat-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 8px; color: var(--metin); font-size: 15px; font-weight: 700; cursor: pointer; transition: var(--gecis); min-width: 75px; text-align: center; }
+    .saat-btn:hover { background: rgba(249, 115, 22, 0.15); }
+    
+    /* AKILLI IŞIK (GLOW) */
+    .saat-btn.yaklasan { border-color: var(--kayisi); color: var(--kayisi); animation: glow 1.5s infinite alternate; }
+    @keyframes glow { from { box-shadow: 0 0 5px rgba(249, 115, 22, 0.3); } to { box-shadow: 0 0 15px rgba(249, 115, 22, 0.8); } }
 
-/* ── 3D HARİTA ── */
-.harita-section{background:var(--yesil-derin);padding:64px 0 0;}
-.harita-header{padding:0 48px 36px;}
-.harita-header .sec-label{color:var(--altin-parlak);}
-.harita-header .sec-title{color:#fff;}
-.harita-header .sec-title em{color:var(--altin-parlak);}
-.harita-header .sec-desc{color:rgba(255,255,255,.48);}
-.harita-wrap{position:relative;height:520px;width:100%;}
-#map{width:100%;height:100%;}
-.mapboxgl-ctrl-logo,.mapboxgl-ctrl-attrib{display:none!important;}
-.map-overlay{position:absolute;top:16px;left:16px;z-index:10;background:rgba(14,61,37,.92);backdrop-filter:blur(10px);border:1px solid rgba(196,136,46,.3);border-radius:10px;padding:16px 18px;min-width:180px;}
-.map-overlay h3{font-family:'Cormorant Garamond',serif;font-size:17px;color:#fff;margin-bottom:5px;}
-.map-overlay p{font-size:11px;color:rgba(255,255,255,.48);line-height:1.6;}
-.map-overlay-stat{display:flex;gap:16px;margin-top:10px;}
-.mo-stat .n{font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--altin-parlak);line-height:1;}
-.mo-stat .l{font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
-.map-controls{position:absolute;bottom:16px;right:16px;z-index:10;display:flex;flex-direction:column;gap:8px;}
-.map-ctrl-btn{width:36px;height:36px;border-radius:8px;background:rgba(14,61,37,.92);border:1px solid rgba(196,136,46,.3);color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.map-legend{position:absolute;bottom:16px;left:16px;z-index:10;background:rgba(14,61,37,.88);backdrop-filter:blur(8px);border:1px solid rgba(196,136,46,.22);border-radius:8px;padding:12px 14px;}
-.legend-title{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:8px;}
-.legend-item{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
-.legend-item:last-child{margin-bottom:0;}
-.legend-line{width:20px;height:3px;border-radius:2px;}
-.legend-text{font-size:11px;color:rgba(255,255,255,.65);}
-.durak-pin{width:26px;height:26px;background:var(--altin);border:2.5px solid #fff;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3);}
-.durak-pin svg{width:10px;height:10px;fill:white;}
-.mapboxgl-popup-content{background:rgba(14,61,37,.95)!important;color:#fff!important;border-radius:8px!important;border:1px solid rgba(196,136,46,.4)!important;padding:12px 14px!important;font-family:'DM Sans',sans-serif!important;font-size:12px!important;box-shadow:0 4px 20px rgba(0,0,0,.4)!important;}
-.mapboxgl-popup-tip{border-top-color:rgba(14,61,37,.95)!important;}
-.mapboxgl-popup-close-button{color:rgba(255,255,255,.5)!important;}
-.popup-title{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;color:#fff;margin-bottom:4px;}
-.popup-sub{font-size:11px;color:rgba(255,255,255,.5);}
+    .plaka-info { display: none; background: var(--kayisi); color: #000; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 4px; animation: fadeIn 0.2s ease; letter-spacing: 1px; white-space: nowrap; }
 
-/* ── FOOTER ── */
-footer{background:var(--koyu);padding:48px 48px 28px;}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:40px;margin-bottom:32px;}
-.footer-brand h3{font-family:'Cormorant Garamond',serif;font-size:22px;color:#fff;margin-bottom:8px;}
-.footer-brand p{font-size:12px;line-height:1.7;color:rgba(255,255,255,.32);}
-.footer-col h4{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--altin);margin-bottom:12px;}
-.footer-col a{display:block;font-size:12px;color:rgba(255,255,255,.38);text-decoration:none;margin-bottom:7px;transition:color .2s;}
-.footer-col a:hover{color:rgba(255,255,255,.7);}
-.footer-bottom{border-top:1px solid rgba(255,255,255,.06);padding-top:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
-.footer-bottom p{font-size:11px;color:rgba(255,255,255,.18);}
+    /* ŞEHİR PORTALI EKRANI */
+    .portal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; padding: 0 5%; max-width: 800px; margin: 0 auto; }
+    .portal-card { background: var(--zeytin-kart); border-radius: 12px; padding: 20px; border-top: 4px solid var(--kayisi); text-align: center; }
+    .portal-card h4 { font-size: 14px; color: var(--kayisi); margin-bottom: 10px; }
+    .portal-card p { font-size: 12px; color: var(--metin-soluk); line-height: 1.5; }
 
-/* ══════════════════════════════
-   MOBİL RESPONSIVE
-══════════════════════════════ */
-@media(max-width:768px){
-  /* NAV */
-  nav{padding:0 16px;}
-  .nav-links,.nav-cta{display:none;}
-  .hamburger{display:flex;}
+    /* BOTTOM NAV (SPA) */
+    .bottom-nav { position: fixed; bottom: 0; width: 100%; background: #0a140d; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); z-index: 1000; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--metin-soluk); cursor: pointer; transition: 0.3s; background: transparent; border: none; }
+    .nav-item.active { color: var(--kayisi); transform: translateY(-2px); }
+    .nav-item i { font-size: 22px; font-style: normal; }
+    .nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
 
-  /* HERO */
-  .hero{min-height:85vh;align-items:flex-end;padding-bottom:32px;}
-  .hero-img-wrap{width:100%;height:100%;opacity:0.22;}
-  .hero-overlay{background:linear-gradient(180deg,rgba(14,61,37,.3) 0%,var(--yesil-derin) 60%);}
-  .hero-content{padding:0 20px;max-width:100%;}
-  .hero-h1{font-size:48px;}
-  .hero-h2{font-size:20px;}
-  .hero-desc{font-size:13px;max-width:100%;}
-  .hero-actions{flex-direction:column;}
-  .btn-gold,.btn-outline{width:100%;text-align:center;justify-content:center;padding:15px;}
-  .hero-stats{left:20px;bottom:auto;top:calc(var(--nav-h) + 16px);}
-  .stat-item{padding:10px 18px;}
-  .stat-num{font-size:22px;}
-
-  /* ŞERIT */
-  .serit{gap:24px;padding:10px 16px;justify-content:flex-start;overflow-x:auto;}
-
-  /* HIZLI ERİŞİM */
-  .hizli-erisim{padding:20px 16px;}
-  .hizli-grid{grid-template-columns:repeat(4,1fr);gap:8px;}
-  .hizli-icon{width:36px;height:36px;}
-  .hizli-lbl{font-size:10px;}
-
-  /* BÖLÜMLER */
-  section{padding:40px 16px;}
-  .sec-title{font-size:30px;}
-
-  /* KÜLTÜR */
-  .kultur-section{grid-template-columns:1fr;}
-  .kultur-left{padding:40px 16px;}
-  .kultur-cards{grid-template-columns:1fr 1fr;}
-
-  /* HAT SAATLERİ */
-  .gun-tabs{gap:5px;}
-  .gun-tab{padding:8px 12px;font-size:11px;}
-  .hatlar-grid{grid-template-columns:1fr;}
-
-  /* GALERİ */
-  .galeri-section{padding:40px 16px;}
-  .galeri-grid{grid-template-columns:1fr;}
-  .galeri-img{height:220px;}
-
-  /* REKLAM */
-  .reklam-section{padding:32px 16px;}
-  .reklam-grid{grid-template-columns:1fr 1fr;}
-
-  /* HARİTA */
-  .harita-section{padding:40px 0 0;}
-  .harita-header{padding:0 16px 24px;}
-  .harita-wrap{height:420px;}
-  .map-overlay{min-width:auto;padding:12px 14px;}
-  .map-overlay h3{font-size:15px;}
-  .map-legend{display:none;}
-
-  /* FOOTER */
-  footer{padding:36px 16px 24px;}
-  .footer-grid{grid-template-columns:1fr;gap:28px;}
-  .footer-bottom{flex-direction:column;align-items:flex-start;}
-}
-
-@media(max-width:400px){
-  .hero-h1{font-size:38px;}
-  .hizli-grid{grid-template-columns:repeat(4,1fr);}
-  .hizli-lbl{font-size:9px;}
-  .gun-tab{padding:7px 9px;font-size:10px;}
-}
-</style>
+    #map { width: 100%; height: 100%; border-radius: 15px; }
+    @media (max-width: 768px) { .gunler { justify-content: flex-start; } }
+  </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a class="nav-brand" href="#">
-    <div class="nav-emblem">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+  <div class="duyuru-notu not-sol">📌 <strong>Öğrenci Bilgilendirme</strong><br>Sınav haftası boyunca KYK Yurt seferleri gece 23:00'a kadar uzatılmıştır.</div>
+  <svg class="kultur-cizim cizim-sol" viewBox="0 0 100 200">
+    <path d="M10,180 L10,100 L20,100 L20,110 L30,110 L30,100 L40,100 L40,110 L50,110 L50,100 L60,100 L60,180 Z" />
+    <path d="M15,130 A10,10 0 0,1 35,130 L35,180 L15,180 Z" />
+    <circle cx="80" cy="130" r="4" />
+  </svg>
+
+  <div class="duyuru-notu not-sag">📌 <strong>Halk Pazarı</strong><br>Cuma günleri kurulan Merkez Pazarı nedeniyle Sakız hattı çevre yolunu kullanacaktır.</div>
+  <svg class="kultur-cizim cizim-sag" viewBox="0 0 100 200">
+    <path d="M80,20 Q60,50 80,80 T70,140 T90,180" />
+    <path d="M90,30 Q70,60 90,90 T80,150" />
+    <path d="M20,150 Q40,140 60,150 T90,140" stroke-dasharray="4,4"/>
+  </svg>
+
+  <div class="app-container">
+    <header>
+      <div class="mutkent-logo">MUT<span>KENT</span></div>
+      <div class="weather-mini">Mersin, Mut<br><strong style="color:var(--metin)">24°C Parçalı Bulutlu</strong></div>
+    </header>
+
+    <div id="view-seferler" class="content-area active">
+      <div class="koop-title">S.S. 85 NOLU MUTLULAR OTOBÜS<br>MİNİBÜS VE TAŞIYICILAR KOOPERATİFİ</div>
+      
+      <nav class="gunler" id="gunSecici"></nav>
+
+      <div id="hatKonteyner"></div>
     </div>
-    <div>
-      <div class="nav-name">MutKent</div>
-      <div class="nav-sub">Mut · Mersin</div>
-    </div>
-  </a>
-  <div class="nav-links">
-    <a href="#kultur">Mut</a>
-    <a href="#hatlar">Seferler</a>
-    <a href="#harita">Harita</a>
-    <a href="#iletisim">İletişim</a>
-  </div>
-  <button class="nav-cta" onclick="document.getElementById('hatlar').scrollIntoView({behavior:'smooth'})">Seferleri Gör</button>
-  <button class="hamburger" id="hamburger" aria-label="Menü">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
 
-<!-- MOBİL MENÜ -->
-<div class="mobile-menu" id="mobileMenu">
-  <a href="#kultur" onclick="closeMenu()">Mut Hakkında <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
-  <a href="#hatlar" onclick="closeMenu()">Sefer Saatleri <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
-  <a href="#galeri" onclick="closeMenu()">Araçlarımız <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
-  <a href="#harita" onclick="closeMenu()">3D Harita <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
-  <a href="#iletisim" onclick="closeMenu()">İletişim <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></a>
-  <button class="mobile-cta" onclick="closeMenu();document.getElementById('hatlar').scrollIntoView({behavior:'smooth'})">Sefer Saatlerini Gör</button>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-glow"></div>
-  <div class="hero-img-wrap">
-    <img src="arac1.jpg" alt="Mutlular Koop aracı" onerror="this.parentElement.style.display='none'"/>
-  </div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <div class="eyebrow">
-      <div class="eyebrow-line"></div>
-      <span class="eyebrow-text">Mersin · Mut · mutkent.com</span>
-    </div>
-    <h1 class="hero-h1">Mut'u<br><em>Birbirine</em><br>Bağlarız</h1>
-    <p class="hero-h2">MutKent Dijital Merkezi</p>
-    <p class="hero-desc">Torosların eteğinde, zeytinlerin gölgesinde; Mut'un her köşesine güvenli ve zamanında ulaşım. Ve çok daha fazlası.</p>
-    <div class="hero-actions">
-      <button class="btn-gold" onclick="document.getElementById('hatlar').scrollIntoView({behavior:'smooth'})">Sefer Saatleri</button>
-      <a class="btn-outline" href="#harita">Haritada Gör</a>
-    </div>
-  </div>
-  <div class="hero-stats">
-    <div class="stat-item"><div class="stat-num">5</div><div class="stat-lbl">Aktif hat</div></div>
-    <div class="stat-item"><div class="stat-num">40+</div><div class="stat-lbl">Yıl deneyim</div></div>
-    <div class="stat-item"><div class="stat-num">7/7</div><div class="stat-lbl">Her gün</div></div>
-  </div>
-</div>
-
-<!-- ŞERIT -->
-<div class="serit">
-  <div class="serit-item"><div class="serit-dot"></div>Zeytin Diyarı</div>
-  <div class="serit-item"><div class="serit-dot"></div>Toros Etekleri</div>
-  <div class="serit-item"><div class="serit-dot"></div>Göksu Nehri</div>
-  <div class="serit-item"><div class="serit-dot"></div>Mersin · Mut</div>
-  <div class="serit-item"><div class="serit-dot"></div>33 Nolu Plaka</div>
-  <div class="serit-item"><div class="serit-dot"></div>Güvenli Ulaşım</div>
-</div>
-
-<!-- HIZLI ERİŞİM — mobil için kritik -->
-<div class="hizli-erisim">
-  <div class="hizli-grid">
-    <button class="hizli-btn" onclick="document.getElementById('hatlar').scrollIntoView({behavior:'smooth'})">
-      <div class="hizli-icon" style="background:#E1F5EE;">
-        <svg viewBox="0 0 24 24" stroke="#0F6E56"><rect x="2" y="7" width="20" height="13" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>
-      </div>
-      <span class="hizli-lbl">Sefer<br>Saatleri</span>
-    </button>
-    <button class="hizli-btn" onclick="document.getElementById('harita').scrollIntoView({behavior:'smooth'})">
-      <div class="hizli-icon" style="background:#E6F1FB;">
-        <svg viewBox="0 0 24 24" stroke="#185FA5"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      </div>
-      <span class="hizli-lbl">3D<br>Harita</span>
-    </button>
-    <button class="hizli-btn" onclick="alert('Yakında: Nöbetçi Eczane modülü')">
-      <div class="hizli-icon" style="background:#FCEBEB;">
-        <svg viewBox="0 0 24 24" stroke="#A32D2D"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><path d="M9 10h6M12 7v6"/></svg>
-      </div>
-      <span class="hizli-lbl">Nöbetçi<br>Eczane</span>
-    </button>
-    <button class="hizli-btn" onclick="alert('Yakında: Hava durumu modülü')">
-      <div class="hizli-icon" style="background:#FAEEDA;">
-        <svg viewBox="0 0 24 24" stroke="#854F0B"><path d="M18 10h-1.26A8 8 0 109 20h9a5 5 0 000-10z"/></svg>
-      </div>
-      <span class="hizli-lbl">Hava<br>Durumu</span>
-    </button>
-  </div>
-</div>
-
-<!-- ÜSST REKLAM -->
-<div style="background:#fff;padding:16px 48px 0;">
-  <div style="font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--metin-soluk);margin-bottom:6px;">Sponsorlu</div>
-  <div class="reklam-banner" style="margin:0;">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    <p>Üst Banner Reklam Alanı — 728×90</p>
-  </div>
-</div>
-
-<!-- KÜLTÜR -->
-<div id="kultur" class="kultur-section">
-  <div class="kultur-left">
-    <div class="sec-label">Mut Hakkında</div>
-    <h2 class="sec-title">Torosların<br><em>Kalbinden</em></h2>
-    <p class="sec-desc">Mersin'in incisi Mut; zeytin bahçeleri, tarihi köprüleri ve Göksu nehriyle Türkiye'nin en özgün ilçelerinden biridir. Biz bu güzellikleri birbirine bağlıyoruz.</p>
-  </div>
-  <div class="kultur-cards">
-    <div class="kultur-card">
-      <div class="kultur-icon"><svg viewBox="0 0 24 24" stroke="#e8a83a"><path d="M12 2C8 2 5 5.5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.5-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg></div>
-      <h4>Tarihi Doku</h4>
-      <p>Osmanlı dönemi hanları, tarihi köprüler ve antik yollar Mut'un zengin geçmişini yansıtır.</p>
-    </div>
-    <div class="kultur-card">
-      <div class="kultur-icon"><svg viewBox="0 0 24 24" stroke="#e8a83a"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-      <h4>Zeytin Kültürü</h4>
-      <p>Yüzyıllık zeytin bahçeleri ve geleneksel yağhane ustalığıyla Mut, Mersin'in zeytinlik kalbidir.</p>
-    </div>
-    <div class="kultur-card">
-      <div class="kultur-icon"><svg viewBox="0 0 24 24" stroke="#e8a83a"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/></svg></div>
-      <h4>Göksu Nehri</h4>
-      <p>Toroslardan inen berrak Göksu suları, Mut ovasını besleyen can damarıdır.</p>
-    </div>
-    <div class="kultur-card">
-      <div class="kultur-icon"><svg viewBox="0 0 24 24" stroke="#e8a83a"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
-      <h4>Her Gün Sefer</h4>
-      <p>Haftanın 7 günü, sabahın erkeninden akşamın geçine Mut'un tüm mahallelerine ulaşım.</p>
-    </div>
-  </div>
-</div>
-
-<!-- HAT SAATLERİ -->
-<section id="hatlar" class="hatlar-section">
-  <div class="sec-label">Sefer Tarifesi</div>
-  <h2 class="sec-title">Hat <em>Saatleri</em></h2>
-  <p class="sec-desc" style="margin-bottom:24px;">Günlük sefer saatlerinizi aşağıdan günü seçerek görebilirsiniz.</p>
-  <div class="gun-tabs" id="tabs"></div>
-  <div class="hatlar-grid" id="hatGrid"></div>
-</section>
-
-<!-- GALERİ -->
-<section id="galeri" class="galeri-section" style="padding-top:0;">
-  <div class="sec-label">Araçlarımız</div>
-  <h2 class="sec-title">Filosu ile <em>Tanışın</em></h2>
-  <div class="galeri-grid">
-    <img class="galeri-img" src="arac1.jpg" alt="Mutlular Koop aracı" onerror="this.style.background='var(--krem2)'"/>
-    <img class="galeri-img" src="arac2.jpg" alt="Mutlular Koop aracı" onerror="this.style.background='var(--krem2)'"/>
-  </div>
-</section>
-
-<!-- REKLAM ALANLARI -->
-<div class="reklam-section">
-  <div class="sec-label">Sponsorlu İçerik</div>
-  <h2 class="sec-title" style="font-size:26px;margin-bottom:4px;">Reklam <em>Alanları</em></h2>
-  <p style="font-size:12px;color:var(--metin-acik);">Yerel işletmenizi Mut halkına duyurun.</p>
-  <div class="reklam-grid">
-    <div class="reklam-kare"><div class="reklam-no">Alan 1</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Reklam görseli</p><span>300×250 px</span></div>
-    <div class="reklam-kare"><div class="reklam-no">Alan 2</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Reklam görseli</p><span>300×250 px</span></div>
-    <div class="reklam-kare"><div class="reklam-no">Alan 3</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Reklam görseli</p><span>300×250 px</span></div>
-    <div class="reklam-kare"><div class="reklam-no">Alan 4</div><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Reklam görseli</p><span>300×250 px</span></div>
-  </div>
-  <div class="reklam-banner">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-    <p>Alt Banner — 728×70</p>
-  </div>
-</div>
-
-<!-- 3D HARİTA -->
-<div id="harita" class="harita-section">
-  <div class="harita-header">
-    <div class="sec-label">Güzergah Haritası</div>
-    <h2 class="sec-title">Mut İlçesi<br><em>3D Harita</em></h2>
-    <p class="sec-desc">Hat güzergahlarını ve durakları 3 boyutlu harita üzerinde keşfedin.</p>
-  </div>
-  <div class="harita-wrap">
-    <div id="map"></div>
-    <div class="map-overlay">
-      <h3>Mut İlçesi</h3>
-      <p>Mersin · Toros etekleri</p>
-      <div class="map-overlay-stat">
-        <div class="mo-stat"><div class="n">5</div><div class="l">Hat</div></div>
-        <div class="mo-stat"><div class="n">33</div><div class="l">Plaka</div></div>
-        <div class="mo-stat"><div class="n">850m</div><div class="l">Rakım</div></div>
+    <div id="view-rehber" class="content-area">
+      <h2 style="text-align: center; color: var(--kayisi); padding: 25px; font-family: 'Cormorant Garamond', serif; font-size: 28px;">Mut Şehir Portalı</h2>
+      <div class="portal-grid">
+        <div class="portal-card">
+          <h4>🏥 Nöbetçi Eczane</h4>
+          <p><strong>Şifa Eczanesi</strong><br>Devlet Hastanesi Karşısı<br>Açık: 24 Saat</p>
+        </div>
+        <div class="portal-card">
+          <h4>👨‍⚕️ Hastane Panosu</h4>
+          <p><strong>Bu Hafta Poliklinik</strong><br>Dahiliye: Dr. Ahmet Yılmaz<br>Göz: Dr. Selin B.</p>
+        </div>
+        <div class="portal-card">
+          <h4>🛒 Market Aktüel</h4>
+          <p>BİM Cuma: Teknolojik Ürünler<br>A101 Perşembe: Mutfak Gereçleri<br>ŞOK: Hafta Sonu İndirimi</p>
+        </div>
+        <div class="portal-card">
+          <h4>🎓 Öğrenci Köşesi</h4>
+          <p><strong>MYO Yemekhane:</strong><br>Ezogelin, Taze Fasulye<br>Kütüphane Açılış: 08:30</p>
+        </div>
       </div>
     </div>
-    <div class="map-legend">
-      <div class="legend-title">Güzergahlar</div>
-      <div class="legend-item"><div class="legend-line" style="background:#e8a83a;"></div><span class="legend-text">Köselerli / Hocalı</span></div>
-      <div class="legend-item"><div class="legend-line" style="background:#4db8ff;"></div><span class="legend-text">Sakız / İlice</span></div>
-      <div class="legend-item"><div class="legend-line" style="background:#66d49a;"></div><span class="legend-text">Alaçam / Özlü</span></div>
-      <div class="legend-item"><div class="legend-line" style="background:#ff8566;"></div><span class="legend-text">Yapıntı / Ortaköy</span></div>
-      <div class="legend-item"><div class="legend-line" style="background:#cc99ff;"></div><span class="legend-text">Yüksekokul / TOKİ</span></div>
+
+    <div id="view-harita" class="content-area">
+      <div style="height: calc(100vh - 160px); padding: 20px 5%; max-width: 800px; margin: 0 auto;">
+        <div id="map"></div>
+      </div>
     </div>
-    <div class="map-controls">
-      <button class="map-ctrl-btn" id="btn3d" title="3D/2D">⬡</button>
-      <button class="map-ctrl-btn" id="btnRotate" title="Döndür">↻</button>
-      <button class="map-ctrl-btn" id="btnReset" title="Sıfırla">⌖</button>
+
+    <div id="view-iletisim" class="content-area">
+      <div style="padding: 40px 5%; text-align: center; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: var(--kayisi); font-family: 'Cormorant Garamond', serif; font-size: 32px; margin-bottom: 20px;">Bize Ulaşın</h2>
+        <div style="background: var(--zeytin-kart); border-radius: 16px; padding: 30px; border: 1px solid var(--border);">
+          <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
+          <p style="color: var(--metin); font-size: 16px; margin-bottom: 25px; line-height: 1.6;">
+            Karşıyaka Mah. Mut Otobüs Terminali<br>Dk:30 Mut, Mersin
+          </p>
+          <a href="tel:03247747858" style="background: var(--kayisi); color: #000; padding: 15px 30px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 18px; display: inline-block;">0324 774 78 58</a>
+        </div>
+      </div>
     </div>
+
+    <nav class="bottom-nav">
+      <button class="nav-item active" onclick="switchView('seferler', this)"><i>🚍</i><span>Seferler</span></button>
+      <button class="nav-item" onclick="switchView('rehber', this)"><i>🏢</i><span>Şehir</span></button>
+      <button class="nav-item" onclick="switchView('harita', this)"><i>📍</i><span>Harita</span></button>
+      <button class="nav-item" onclick="switchView('iletisim', this)"><i>📞</i><span>İletişim</span></button>
+    </nav>
   </div>
-</div>
 
-<!-- FOOTER -->
-<footer id="iletisim">
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <h3>MutKent</h3>
-      <p>Mut ilçesinin dijital merkezi. Ulaşım, sağlık, hava durumu ve yerel bilgiler tek çatı altında. Mutlular Kooperatifi güvencesiyle.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Hatlar</h4>
-      <a href="#">Köselerli / Hocalı</a>
-      <a href="#">Sakız / İlice</a>
-      <a href="#">Alaçam / Özlü</a>
-      <a href="#">Yapıntı / Ortaköy</a>
-      <a href="#">Yüksekokul / TOKİ</a>
-    </div>
-    <div class="footer-col">
-      <h4>İletişim</h4>
-      <a href="tel:112">Acil: 112</a>
-      <a href="#">Mut, Mersin</a>
-      <a href="#">mutkent.com</a>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <p>© 2025 MutKent — Mutlular Kooperatifi, Mut, Mersin</p>
-    <p>mutkent.com</p>
-  </div>
-</footer>
+  <script src="https://cdn.jsdelivr.net/npm/mapbox-gl@3.3.0/dist/mapbox-gl.js"></script>
+  <script>
+    // 1. HASTANE SAATLERİNİ OTOMATİK ÜRETEN ALGORİTMA
+    const HASTANE_SAATLERI = [];
+    for(let h=7; h<12; h++) {
+      for(let m=0; m<60; m+=15) HASTANE_SAATLERI.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`);
+    }
+    for(let h=12; h<=18; h++) {
+      for(let m=0; m<60; m+=30) HASTANE_SAATLERI.push(`${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}`);
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/mapbox-gl@3.3.0/dist/mapbox-gl.js"></script>
-<script>
-/* ── HAMBURGER MENÜ ── */
-const hamburger=document.getElementById('hamburger');
-const mobileMenu=document.getElementById('mobileMenu');
-hamburger.addEventListener('click',()=>{
-  hamburger.classList.toggle('open');
-  mobileMenu.classList.toggle('open');
-  document.body.style.overflow=mobileMenu.classList.contains('open')?'hidden':'';
-});
-function closeMenu(){
-  hamburger.classList.remove('open');
-  mobileMenu.classList.remove('open');
-  document.body.style.overflow='';
-}
+    // 2. VERİTABANI (Her güne özel dizi ile tasarlandı)
+    const HAT_VERILERI = [
+      {
+        id: 1, ad: "Hastane - Otogar", guzergah: "Hastane ➔ Çarşı ➔ Terminal ➔ Otogar", icon: "🚑",
+        saatler: { "Pazartesi": HASTANE_SAATLERI, "Salı": HASTANE_SAATLERI, "Çarşamba": HASTANE_SAATLERI, "Perşembe": HASTANE_SAATLERI, "Cuma": HASTANE_SAATLERI, "Cumartesi": [], "Pazar": [] }
+      },
+      {
+        id: 2, ad: "Köselerli / Hocalı", guzergah: "Terminal ➔ Hastane ➔ Kurtsuyu ➔ Hocalı", icon: "🍑",
+        saatler: { "Pazartesi": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Salı": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Çarşamba": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Perşembe": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Cuma": ["07:00", "09:00", "11:00", "13:00", "15:00", "17:00"], "Cumartesi": ["08:00", "12:00", "16:00"], "Pazar": ["09:00", "15:00"] }
+      },
+      {
+        id: 3, ad: "Sakız / İlice", guzergah: "Merkez ➔ Otogar ➔ Sakız Köyü", icon: "🫒",
+        saatler: { "Pazartesi": ["06:30", "10:00", "13:30", "16:30"], "Salı": ["06:30", "10:00", "13:30", "16:30"], "Çarşamba": ["06:30", "10:00", "13:30", "16:30"], "Perşembe": ["06:30", "10:00", "13:30", "16:30"], "Cuma": ["06:30", "10:00", "13:30", "16:30"], "Cumartesi": ["07:00", "16:30"], "Pazar": ["07:00", "16:30"] }
+      },
+      {
+        id: 4, ad: "Yüksekokul / TOKİ", guzergah: "Terminal ➔ Lise ➔ TOKİ ➔ MYO", icon: "🟣",
+        saatler: { "Pazartesi": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Salı": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Çarşamba": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Perşembe": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Cuma": ["07:30", "09:30", "12:45", "15:15", "17:00"], "Cumartesi": [], "Pazar": [] }
+      }
+    ];
 
-/* ── HAT VERİLERİ ── */
-const DAYS=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'];
-const HATLAR=[
-  {kisa:'Köselerli / Hocalı',ad:'Köselerli - Kemenli - Kurtsuyu - Çortak - Hocalı',t:{
-    'Pazartesi':[{s:'07:00',d:'Mahmut'},{s:'08:00',d:'Düzenli'},{s:'09:00',d:'Kaya'},{s:'11:00',d:'Mahmut'},{s:'13:00',d:'Düzenli'},{s:'15:00',d:'Kaya'},{s:'17:00',d:'Mahmut'},{s:'18:00',d:'Düzenli'}],
-    'Salı':[{s:'07:00',d:'Kaya'},{s:'08:00',d:'Mahmut'},{s:'09:00',d:'Düzenli'},{s:'11:00',d:'Kaya'},{s:'13:00',d:'Mahmut'},{s:'15:00',d:'Kaya'},{s:'17:00',d:'Mahmut'}],
-    'Çarşamba':[{s:'07:00',d:'Düzenli'},{s:'08:00',d:'Kaya'},{s:'09:00',d:'Mahmut'},{s:'11:00',d:'Düzenli'},{s:'13:00',d:'Kaya'},{s:'15:00',d:'Düzenli'},{s:'16:00',d:'Kaya'}],
-    'Perşembe':[{s:'07:00',d:'Mahmut'},{s:'08:00',d:'Düzenli'},{s:'09:00',d:'Kaya'},{s:'11:00',d:'Mahmut'},{s:'13:00',d:'Düzenli'},{s:'15:00',d:'Kaya'}],
-    'Cuma':[{s:'07:00',d:'Kaya'},{s:'08:00',d:'Mahmut'},{s:'09:00',d:'Düzenli'},{s:'10:00',d:'Kaya'},{s:'11:00',d:'Mahmut'},{s:'12:00',d:'Düzenli'},{s:'13:00',d:'Kaya'},{s:'15:00',d:'Mahmut'},{s:'16:00',d:'Düzenli'}],
-    'Cumartesi':[{s:'07:00',d:'Düzenli/Kaya'},{s:'09:00',d:'Kaya'},{s:'10:00',d:'Düzenli'},{s:'13:00',d:'Mahmut'},{s:'15:00',d:'Kaya'}],
-    'Pazar':[{s:'07:00',d:'Mahmut'},{s:'09:00',d:'Düzenli'},{s:'13:00',d:'Kaya'},{s:'14:00',d:'Mahmut'},{s:'17:00',d:'Poyraz'}]
-  }},
-  {kisa:'Sakız / İlice',ad:'Sakız İlice',t:{
-    'Pazartesi':[{s:'06:30',d:'U.Ali'},{s:'13:30',d:'—'},{s:'16:30',d:'Sinan'}],
-    'Salı':[{s:'06:30',d:'U.Ali'},{s:'13:30',d:'—'},{s:'16:30',d:'Naci'}],
-    'Çarşamba':[{s:'06:30',d:'Naci'},{s:'13:30',d:'—'},{s:'16:30',d:'Sinan'}],
-    'Perşembe':[{s:'06:30',d:'Sinan'},{s:'13:30',d:'—'},{s:'16:30',d:'U.Ali'},{s:'19:30',d:'—'}],
-    'Cuma':[{s:'06:30',d:'U.Ali'},{s:'14:00',d:'Naci'},{s:'16:30',d:'Sinan'}],
-    'Cumartesi':[{s:'07:00',d:'Sinan'},{s:'16:30',d:'Naci'}],
-    'Pazar':[{s:'07:00',d:'Naci'},{s:'16:30',d:'Sinan'}]
-  }},
-  {kisa:'Alaçam / Özlü',ad:'Alaçam Özlü',t:{
-    'Pazartesi':[{s:'06:30',d:'—'},{s:'13:30',d:'—'},{s:'16:30',d:'Naci'}],
-    'Salı':[{s:'06:30',d:'—'},{s:'13:30',d:'—'},{s:'16:30',d:'Sinan'}],
-    'Çarşamba':[{s:'06:30',d:'—'},{s:'13:30',d:'—'},{s:'16:30',d:'U.Ali'}],
-    'Perşembe':[{s:'06:30',d:'—'},{s:'13:30',d:'—'},{s:'16:30',d:'Naci'}],
-    'Cuma':[{s:'06:30',d:'—'},{s:'14:00',d:'U.Ali'},{s:'16:30',d:'Naci'}],
-    'Cumartesi':[{s:'07:00',d:'—'},{s:'16:30',d:'U.Ali'}],
-    'Pazar':[{s:'07:00',d:'—'},{s:'16:30',d:'—'}]
-  }},
-  {kisa:'Yapıntı / Ortaköy',ad:'Yapıntı Ortaköy',t:{
-    'Pazartesi':[{s:'08:00',d:'Naci'},{s:'10:00',d:'Naci'},{s:'12:00',d:'Naci'},{s:'14:00',d:'Naci'},{s:'16:00',d:'U.Ali'}],
-    'Salı':[{s:'08:00',d:'Sinan'},{s:'10:00',d:'Sinan'},{s:'12:00',d:'Sinan'},{s:'14:00',d:'Sinan'},{s:'16:00',d:'U.Ali'}],
-    'Çarşamba':[{s:'08:00',d:'U.Ali'},{s:'10:00',d:'U.Ali'},{s:'12:00',d:'U.Ali'},{s:'14:00',d:'U.Ali'},{s:'16:00',d:'Naci'}],
-    'Perşembe':[{s:'08:00',d:'Naci'},{s:'10:00',d:'Naci'},{s:'12:00',d:'Naci'},{s:'14:00',d:'Naci'},{s:'16:00',d:'Sinan'}],
-    'Cuma':[{s:'08:00',d:'Sinan'},{s:'10:00',d:'Sinan'},{s:'12:00',d:'Sinan'},{s:'14:00',d:'U.Ali'}],
-    'Cumartesi':[{s:'08:00',d:'Düzenli'},{s:'12:00',d:'Düzenli'},{s:'16:00',d:'U.Ali'}],
-    'Pazar':[{s:'08:00',d:'Düzenli'},{s:'12:00',d:'Düzenli'},{s:'16:00',d:'Sinan'}]
-  }},
-  {kisa:'Yüksekokul / TOKİ',ad:'Yüksekokul - TOKİ',t:{
-    'Pazartesi':[{s:'07:30',d:'Naci'},{s:'09:30',d:'Naci'},{s:'12:45',d:'Naci'},{s:'15:15',d:'Naci'},{s:'17:00',d:'U.Ali'}],
-    'Salı':[{s:'07:30',d:'Sinan'},{s:'09:30',d:'Sinan'},{s:'12:45',d:'Sinan'},{s:'15:15',d:'Sinan'},{s:'17:00',d:'U.Ali'}],
-    'Çarşamba':[{s:'07:30',d:'U.Ali'},{s:'09:30',d:'U.Ali'},{s:'12:45',d:'U.Ali'},{s:'15:15',d:'U.Ali'},{s:'17:00',d:'Naci'}],
-    'Perşembe':[{s:'07:30',d:'Naci'},{s:'09:30',d:'Naci'},{s:'12:45',d:'Naci'},{s:'15:15',d:'Naci'},{s:'17:00',d:'Sinan'}],
-    'Cuma':[{s:'07:30',d:'Sinan'},{s:'09:30',d:'Sinan'},{s:'12:45',d:'Sinan'},{s:'15:15',d:'Sinan'},{s:'17:00',d:'U.Ali'}],
-    'Cumartesi':[{s:'09:30',d:'Sinan'},{s:'12:45',d:'Düzenli'},{s:'17:00',d:'Düzenli'}],
-    'Pazar':[]
-  }}
-];
-const todayIdx=new Date().getDay()===0?6:new Date().getDay()-1;
-let activeDay=DAYS[todayIdx]||'Pazartesi';
-function renderHatlar(){
-  document.getElementById('tabs').innerHTML=DAYS.map(d=>
-    `<button class="gun-tab${d===activeDay?' active':''}" onclick="setDay('${d}')">${d}</button>`
-  ).join('');
-  document.getElementById('hatGrid').innerHTML=HATLAR.map(h=>{
-    const s=h.t[activeDay]||[];
-    return`<div class="hat-card"><div class="hat-head"><h4>${h.kisa}</h4><p>${h.ad}</p></div>${s.length?s.map(r=>`<div class="hat-sefer"><span class="sefer-saat">${r.s}</span><span class="sefer-sofor">${r.d}</span></div>`).join(''):'<div class="hat-bos">Bu gün sefer yok</div>'}</div>`;
-  }).join('');
-}
-function setDay(d){activeDay=d;renderHatlar();}
-renderHatlar();
+    const GUNLER = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+    let bugunIndex = new Date().getDay() === 0 ? 6 : new Date().getDay() - 1;
+    let aktifGun = GUNLER[bugunIndex];
 
-/* ── 3D HARİTA ── */
-mapboxgl.accessToken='pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
-const MUT=[33.4378,36.6478];
-const map=new mapboxgl.Map({container:'map',style:'mapbox://styles/mapbox/dark-v11',center:MUT,zoom:14,pitch:55,bearing:-20,antialias:true});
-map.addControl(new mapboxgl.NavigationControl({showCompass:true,showZoom:true,visualizePitch:true}),'top-right');
-map.on('load',()=>{
-  const layers=map.getStyle().layers;
-  let lblId;
-  for(let i=0;i<layers.length;i++){if(layers[i].type==='symbol'&&layers[i].layout['text-field']){lblId=layers[i].id;break;}}
-  map.addLayer({id:'3d-buildings',source:'composite','source-layer':'building',filter:['==','extrude','true'],type:'fill-extrusion',minzoom:13,paint:{'fill-extrusion-color':['interpolate',['linear'],['get','height'],0,'#1a3a28',20,'#1f4a32',50,'#264f35',100,'#2d5c3c'],'fill-extrusion-height':['interpolate',['linear'],['zoom'],13,0,14,['get','height']],'fill-extrusion-base':['interpolate',['linear'],['zoom'],13,0,14,['get','min_height']],'fill-extrusion-opacity':0.88}},lblId);
-  [{id:'hat1',color:'#e8a83a',coords:[[33.4378,36.6478],[33.41,36.65],[33.38,36.66],[33.35,36.67],[33.32,36.68]]},
-   {id:'hat2',color:'#4db8ff',coords:[[33.4378,36.6478],[33.45,36.63],[33.47,36.61],[33.49,36.59]]},
-   {id:'hat3',color:'#66d49a',coords:[[33.4378,36.6478],[33.43,36.66],[33.44,36.68],[33.45,36.70]]},
-   {id:'hat4',color:'#ff8566',coords:[[33.4378,36.6478],[33.42,36.64],[33.40,36.62],[33.38,36.60]]},
-   {id:'hat5',color:'#cc99ff',coords:[[33.4378,36.6478],[33.4450,36.6500],[33.4520,36.6520]]}
-  ].forEach(g=>{
-    map.addSource(g.id,{type:'geojson',data:{type:'Feature',geometry:{type:'LineString',coordinates:g.coords}}});
-    map.addLayer({id:g.id+'-glow',type:'line',source:g.id,paint:{'line-color':g.color,'line-width':7,'line-opacity':0.12,'line-blur':4}});
-    map.addLayer({id:g.id,type:'line',source:g.id,layout:{'line-join':'round','line-cap':'round'},paint:{'line-color':g.color,'line-width':3,'line-opacity':0.9}});
-  });
-  [{coords:[33.4378,36.6478],ad:'Mut Merkez Garaj',alt:'Ana terminal — tüm hatlar'},
-   {coords:[33.41,36.65],ad:'Köselerli',alt:'Hat 1'},
-   {coords:[33.45,36.63],ad:'Sakız Köyü',alt:'Hat 2'},
-   {coords:[33.43,36.66],ad:'Alaçam',alt:'Hat 3'},
-   {coords:[33.42,36.64],ad:'Yapıntı',alt:'Hat 4'},
-   {coords:[33.4450,36.650],ad:'Yüksekokul',alt:'Hat 5'}
-  ].forEach(d=>{
-    const el=document.createElement('div');el.className='durak-pin';
-    el.innerHTML=`<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="white"/></svg>`;
-    new mapboxgl.Marker({element:el}).setLngLat(d.coords).setPopup(new mapboxgl.Popup({offset:18,closeButton:true}).setHTML(`<div class="popup-title">${d.ad}</div><div class="popup-sub">${d.alt}</div>`)).addTo(map);
-  });
-  setTimeout(()=>{map.easeTo({pitch:60,bearing:15,zoom:15,duration:2500});},600);
-});
-let is3d=true;
-document.getElementById('btn3d').addEventListener('click',()=>{is3d=!is3d;map.easeTo({pitch:is3d?58:0,bearing:is3d?-20:0,duration:1200});});
-let rotating=false,rotAnim;
-document.getElementById('btnRotate').addEventListener('click',()=>{rotating=!rotating;if(rotating){(function r(){if(!rotating)return;map.setBearing(map.getBearing()+0.4);rotAnim=requestAnimationFrame(r);})();}else cancelAnimationFrame(rotAnim);});
-document.getElementById('btnReset').addEventListener('click',()=>{rotating=false;cancelAnimationFrame(rotAnim);map.easeTo({center:MUT,zoom:14,pitch:55,bearing:-20,duration:1500});});
-</script>
+    // 3. BAŞLATICI FONKSİYON
+    function init() {
+      // Gün butonlarını ekle
+      document.getElementById('gunSecici').innerHTML = GUNLER.map(g => 
+        `<button class="gun-btn ${g === aktifGun ? 'aktif' : ''}" onclick="gunDegistir('${g}')">${g}</button>`
+      ).join('');
+      renderHatlar();
+    }
+
+    function gunDegistir(gun) {
+      aktifGun = gun;
+      init();
+    }
+
+    // 4. YAKLAŞAN SAATİ BULMA ALGORİTMASI
+    function siradakiSaatiBul(gunSaatleri) {
+      if (aktifGun !== GUNLER[bugunIndex]) return null; // Sadece "bugün" ise çalışır
+      
+      const simdi = new Date();
+      const suAnDakika = (simdi.getHours() * 60) + simdi.getMinutes();
+
+      for (let s of gunSaatleri) {
+        const [h, m] = s.split(':').map(Number);
+        if ((h * 60 + m) >= suAnDakika) return s;
+      }
+      return null;
+    }
+
+    // 5. KARTLARI ÇİZME VE ORTALAMA
+    function renderHatlar() {
+      const konteyner = document.getElementById('hatKonteyner');
+      let htmlContent = '';
+
+      HAT_VERILERI.forEach(hat => {
+        const gunSaatleri = hat.saatler[aktifGun] || [];
+        
+        // Eğer o gün hiç saat yoksa (örn: Hastane hattı haftasonu), o kartı hiç çizme
+        if (gunSaatleri.length === 0) return;
+
+        const siradakiSaat = siradakiSaatiBul(gunSaatleri);
+
+        const saatHtml = gunSaatleri.map(s => {
+          const yaklasanClass = (s === siradakiSaat) ? 'yaklasan' : '';
+          return `
+            <div class="saat-wrapper">
+              <button class="saat-btn ${yaklasanClass}" onclick="plakaGoster(this)">${s}</button>
+              <div class="plaka-info"></div>
+            </div>
+          `;
+        }).join('');
+
+        htmlContent += `
+          <div class="hat-kart">
+            <div class="easter-egg">${hat.icon}</div>
+            <div class="kart-ust">
+              <div class="hat-adi">${hat.ad}</div>
+              <div class="guzergah">${hat.guzergah}</div>
+            </div>
+            <div class="saat-grid">
+              ${saatHtml}
+            </div>
+          </div>
+        `;
+      });
+
+      if (htmlContent === '') {
+        htmlContent = `<p style="text-align:center; padding:20px; color:var(--metin-soluk);">Bu gün için planlanan sefer bulunmamaktadır.</p>`;
+      }
+
+      konteyner.innerHTML = htmlContent;
+    }
+
+    // 6. PLAKA SİSTEMİ (33 C 7000 - 7050 Arası)
+    function plakaGoster(btn) {
+      const info = btn.nextElementSibling;
+      
+      // Tıklanan hariç tüm açık plakaları kapat
+      document.querySelectorAll('.plaka-info').forEach(p => { 
+        if(p !== info) p.style.display = 'none'; 
+      });
+      
+      if (info.style.display === 'block') {
+        info.style.display = 'none';
+      } else {
+        if (!info.innerText) {
+          const rand = Math.floor(Math.random() * 51).toString().padStart(2, '0');
+          info.innerText = `33 C 70${rand}`;
+        }
+        info.style.display = 'block';
+      }
+    }
+
+    // 7. SPA GEÇİŞ (Menü Navigasyonu)
+    let map = null;
+    function switchView(viewId, el) {
+      document.querySelectorAll('.content-area').forEach(v => v.classList.remove('active'));
+      document.getElementById('view-' + viewId).classList.add('active');
+      
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      el.classList.add('active');
+
+      if(viewId === 'harita' && !map) {
+        mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+        map = new mapboxgl.Map({ container: 'map', style: 'mapbox://styles/mapbox/dark-v11', center: [33.4378, 36.6478], zoom: 13, pitch: 45 });
+        new mapboxgl.Marker({ color: '#F97316' }).setLngLat([33.4378, 36.6478]).addTo(map);
+      }
+    }
+
+    init(); // Uygulamayı Başlat
+  </script>
 </body>
 </html>
