@@ -27,18 +27,27 @@
     .kultur-cizim { position: fixed; top: 25%; height: 50vh; width: 15vw; opacity: 0.12; pointer-events: none; z-index: 0; stroke: var(--kayisi); fill: none; stroke-width: 1.5; }
     .cizim-sol { left: 2%; }
     .cizim-sag { right: 2%; }
+    @media (max-width: 1150px) { .kultur-cizim { display: none; } }
 
-    /* WIDGET KONTEYNERİ (Hem Web Hem Mobil İçin Akıllı Sarıcı) */
-    .widget-container { z-index: 5; pointer-events: none; } /* Webde tıklamaları engellemesin diye */
-    .widget-container > * { pointer-events: auto; } /* İçindeki elemanlar tıklanabilsin */
+    /* UYGULAMA İSKELETİ (SPA) */
+    .app-container { height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 10; }
+    .content-area { flex: 1; overflow-y: auto; padding-bottom: 90px; display: none; scroll-behavior: smooth;}
+    .content-area.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* SABİT REKLAM ALANLARI (Web Görünümü) */
-    .reklam-alani { position: fixed; bottom: 80px; width: 16vw; max-width: 150px; height: 160px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 15px; color: var(--metin-soluk); font-size: 11px; z-index: 5; }
-    .reklam-sol { left: 2%; }
-    .reklam-sag { right: 2%; }
-    .reklam-alani span { font-size: 20px; color: var(--kayisi); margin-bottom: 5px; opacity: 0.5;}
+    /* HEADER & WEB NAVİGASYON */
+    header { padding: 12px 5%; background: rgba(15, 31, 20, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; z-index: 100; flex-shrink: 0;}
+    .mutkent-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--metin); letter-spacing: 1px; }
+    .mutkent-logo span { color: var(--kayisi); }
+    .nav-container { display: none; } 
+    .weather-mini { font-size: 12px; text-align: right; color: var(--metin-soluk); line-height: 1.3; }
 
-    /* YENİ NESİL BİLGİ PANELLERİ (Web Görünümü) */
+    /* MİNİMAL KOOPERATİF BAŞLIĞI */
+    .koop-title { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 15px; font-weight: 600; color: var(--kayisi); letter-spacing: 2px; text-transform: uppercase; padding: 20px 10px; line-height: 1.4;}
+
+    /* BİLGİ PANELLERİ & REKLAMLAR (WEB İÇİN SABİT, MOBİL İÇİN SCROLL) */
+    .mobile-widget-wrapper { display: contents; } /* Web versiyonda wrapper'ı yoksay */
+
     .sabit-panel { position: fixed; top: 12%; width: 18vw; background: rgba(254, 243, 199, 0.95); color: #78350F; padding: 20px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); z-index: 5; line-height: 1.6; border-left: 5px solid var(--kayisi); font-size: 13px; }
     .panel-sol { left: 2%; }
     .panel-sag { right: 2%; }
@@ -48,45 +57,32 @@
     .hd-madde strong { font-weight: 700; color: #451A03; }
     .hd-uyari { background: rgba(220, 38, 38, 0.15); color: #B91C1C; padding: 8px 12px; border-radius: 6px; font-weight: 700; border-left: 3px solid #DC2626; margin-top: 10px; font-size: 12px;}
 
-    /* MOBİL OPTİMİZASYON (Yatay Kaydırılabilir Paneller) */
+    .reklam-alani { position: fixed; bottom: 80px; width: 16vw; max-width: 150px; height: 160px; background: rgba(255,255,255,0.02); border: 1px dashed var(--border); border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 15px; color: var(--metin-soluk); font-size: 11px; z-index: 5; }
+    .reklam-sol { left: 2%; }
+    .reklam-sag { right: 2%; }
+    .reklam-alani span { font-size: 20px; color: var(--kayisi); margin-bottom: 5px; opacity: 0.5;}
+
+    /* MOBİL OPTİMİZASYONU (Aşağı Kaydırıldığında Gözden Kaybolan Yatay Paneller) */
     @media (max-width: 1150px) { 
-      .kultur-cizim { display: none; } /* Mobilde sadece arka plan çizimlerini gizleriz */
-      
-      .widget-container {
-        position: relative; display: flex; overflow-x: auto; gap: 15px; padding: 15px 5%;
-        border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.2);
-        scrollbar-width: none; pointer-events: auto; flex-shrink: 0;
+      .mobile-widget-wrapper {
+        display: flex; overflow-x: auto; gap: 15px; padding: 0 5% 20px;
+        scrollbar-width: none; pointer-events: auto; scroll-snap-type: x mandatory;
       }
-      .widget-container::-webkit-scrollbar { display: none; }
+      .mobile-widget-wrapper::-webkit-scrollbar { display: none; }
       
       .sabit-panel {
         position: relative; top: auto; left: auto; right: auto; bottom: auto;
-        width: 85vw; max-width: 320px; flex-shrink: 0; padding: 15px; font-size: 12px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        width: 85vw; min-width: 280px; max-width: 320px; flex-shrink: 0; padding: 15px; font-size: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1); scroll-snap-align: center;
       }
+      
       .reklam-alani {
         position: relative; top: auto; left: auto; right: auto; bottom: auto;
-        width: 70vw; max-width: 250px; flex-shrink: 0; height: auto;
-        flex-direction: row; gap: 15px; text-align: left; padding: 15px;
+        width: 85vw; min-width: 280px; max-width: 320px; flex-shrink: 0; height: auto; min-height: 100px;
+        flex-direction: row; gap: 15px; text-align: left; padding: 15px; scroll-snap-align: center;
       }
-      .reklam-alani span { margin-bottom: 0; font-size: 16px;}
+      .reklam-alani span { margin-bottom: 0; font-size: 18px;}
     }
-
-    /* UYGULAMA İSKELETİ (SPA) */
-    .app-container { height: 100vh; display: flex; flex-direction: column; position: relative; z-index: 10; }
-    .content-area { flex: 1; overflow-y: auto; padding-bottom: 90px; display: none; }
-    .content-area.active { display: block; animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* HEADER & WEB NAVİGASYON */
-    header { flex-shrink: 0; padding: 12px 5%; background: rgba(15, 31, 20, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; z-index: 100; border-bottom: 1px solid var(--border);}
-    .mutkent-logo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; color: var(--metin); letter-spacing: 1px; }
-    .mutkent-logo span { color: var(--kayisi); }
-    .nav-container { display: none; } 
-    .weather-mini { font-size: 12px; text-align: right; color: var(--metin-soluk); line-height: 1.3; display: none; }
-
-    /* KOOPERATİF BAŞLIĞI */
-    .koop-title { font-family: 'Cormorant Garamond', serif; text-align: center; font-size: 15px; font-weight: 600; color: var(--kayisi); letter-spacing: 2px; text-transform: uppercase; padding: 25px 10px 15px; line-height: 1.4;}
 
     /* PLAKA ARAMA ALANI */
     .arama-konteyner { display: flex; flex-direction: column; gap: 10px; margin: 0 5% 20px; max-width: 800px; margin-left: auto; margin-right: auto; }
@@ -106,7 +102,7 @@
     .gun-btn { padding: 10px 22px; border-radius: 8px; border: 1px solid var(--border); background: var(--zeytin-kart); color: var(--metin-soluk); cursor: pointer; font-weight: 500; transition: var(--gecis); font-family: inherit; white-space: nowrap;}
     .gun-btn.aktif { background: var(--kayisi); color: #000; font-weight: 700; box-shadow: 0 0 15px rgba(249, 115, 22, 0.4); border-color: var(--kayisi);}
 
-    /* KART TASARIMLARI (Tam Ortalanmış) */
+    /* KART TASARIMLARI */
     .hat-kart { background: var(--zeytin-kart); border-radius: 16px; margin: 0 5% 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden; text-align: center; padding-bottom: 25px; max-width: 800px; margin-left: auto; margin-right: auto; }
     .easter-egg { position: absolute; right: 20px; bottom: 15px; font-size: 50px; opacity: 0.2; pointer-events: none; z-index: 1; }
     
@@ -114,7 +110,7 @@
     .hat-adi { font-size: 24px; font-weight: 700; color: var(--metin); margin-bottom: 8px; }
     .guzergah { font-size: 13px; color: var(--metin-soluk); margin-bottom: 15px; line-height: 1.6; max-width: 80%;}
     
-    .harita-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--kayisi); padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--gecis); display: inline-flex; align-items: center; gap: 6px;}
+    .harita-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--kayisi); padding: 8px 16px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; transition: var(--gecis); display: inline-flex; align-items: center; gap: 6px;}
     .harita-btn:hover { background: var(--kayisi); color: #000; }
 
     /* SAATLER & PLAKA AÇILIR MENÜSÜ */
@@ -161,7 +157,7 @@
     .nav-item i { font-size: 20px; font-style: normal; }
     .nav-item span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
 
-    @media (min-width: 850px) {
+    @media (min-width: 1150px) {
       .bottom-nav { display: none; } 
       .nav-container { display: flex; gap: 10px; } 
       .nav-item { flex-direction: row; padding: 8px 12px; background: rgba(255,255,255,0.05); border-radius: 8px; }
@@ -170,6 +166,7 @@
       .nav-item span { font-size: 12px; }
       .content-area { padding-bottom: 40px; }
       .lejant-item { width: auto; }
+      .weather-mini { display: none; } /* Webde hava durumu paneli solda zaten var */
     }
     @media (max-width: 768px) { .gunler { justify-content: flex-start; } .lejant-item { width: 100%; } }
   </style>
@@ -180,6 +177,7 @@
   <svg class="kultur-cizim cizim-sag" viewBox="0 0 100 200"><path d="M80,20 Q60,50 80,80 T70,140 T90,180" /><path d="M90,30 Q70,60 90,90 T80,150" /><path d="M20,150 Q40,140 60,150 T90,140" stroke-dasharray="4,4"/></svg>
 
   <div class="app-container">
+    
     <header>
       <div class="mutkent-logo">MUT<span>KENT</span></div>
       
@@ -190,30 +188,33 @@
         <button class="nav-item" onclick="switchView('harita', this)"><i>📍</i><span>Harita</span></button>
         <button class="nav-item" onclick="switchView('iletisim', this)"><i>📞</i><span>İletişim</span></button>
       </nav>
+
+      <div class="weather-mini">Mersin, Mut<br><strong style="color:var(--metin)">26°C Açık</strong></div>
     </header>
 
-    <div class="widget-container">
-      
-      <div class="sabit-panel panel-sol">
-        <div class="panel-baslik">🌦️ Hava Durumu ve Ziraat</div>
-        <div class="hd-madde">☀️ <strong>Sıcaklık:</strong> 26°C (Açık ve Güneşli)</div>
-        <div class="hd-madde">💧 <strong>Yağış:</strong> %0 (Yağmur beklenmiyor)</div>
-        <div class="hd-madde">💨 <strong>Rüzgar:</strong> 12 km/s (Poyraz yönü)</div>
-        <div class="hd-uyari">⚠️ <strong>Zirai Don Uyarısı:</strong> Gece saatlerinde sıcaklık aniden düşecektir. Zirai don riski yüksektir, tarlada önlem alınız!</div>
-      </div>
-
-      <div class="sabit-panel panel-sag">
-        <div class="panel-baslik">📢 Şehir Duyuruları</div>
-        <div class="hd-madde"><strong>Belediye Yol Çalışması:</strong> Meydan kavşağında 14:00-16:00 arası bakım yapılacaktır. Bu güzergahtaki seferlerde 5-10 dk gecikme yaşanabilir. Anlayışınız için teşekkür ederiz.</div>
-        <div class="hd-madde" style="margin-top:15px;"><strong>Üniversite Seferleri:</strong> Sınav haftası nedeniyle MYO Kampüs seferleri gece 23:00'a kadar uzatılmıştır.</div>
-      </div>
-
-      <div class="reklam-alani reklam-sol"><span>AD</span>Yerel İşletmeniz<br>İçin Sponsor Alanı</div>
-      <div class="reklam-alani reklam-sag"><span>AD</span>Yerel İşletmeniz<br>İçin Sponsor Alanı</div>
-      
-    </div>
-
     <div id="view-seferler" class="content-area active">
+      
+      <div class="mobile-widget-wrapper">
+        
+        <div class="sabit-panel panel-sol">
+          <div class="panel-baslik">🌦️ Hava Durumu ve Ziraat</div>
+          <div class="hd-madde">☀️ <strong>Sıcaklık:</strong> 26°C (Açık ve Güneşli)</div>
+          <div class="hd-madde">💧 <strong>Yağış:</strong> %0 (Yağmur beklenmiyor)</div>
+          <div class="hd-madde">💨 <strong>Rüzgar:</strong> 12 km/s (Poyraz yönü)</div>
+          <div class="hd-uyari">⚠️ <strong>Zirai Don Uyarısı:</strong> Gece saatlerinde sıcaklık aniden düşecektir. Zirai don riski yüksektir, tarlada önlem alınız!</div>
+        </div>
+
+        <div class="sabit-panel panel-sag">
+          <div class="panel-baslik">📢 Şehir Duyuruları</div>
+          <div class="hd-madde"><strong>Belediye Yol Çalışması:</strong> Meydan kavşağında 14:00-16:00 arası bakım yapılacaktır. Bu güzergahtaki seferlerde gecikme yaşanabilir.</div>
+          <div class="hd-madde" style="margin-top:15px;"><strong>Üniversite Seferleri:</strong> Sınav haftası nedeniyle MYO Kampüs seferleri gece 23:00'a kadar uzatılmıştır.</div>
+        </div>
+
+        <div class="reklam-alani reklam-sol"><span>AD</span>Yerel İşletmeniz<br>İçin Sponsor Alanı</div>
+        <div class="reklam-alani reklam-sag"><span>AD</span>Yerel İşletmeniz<br>İçin Sponsor Alanı</div>
+
+      </div>
+
       <div class="koop-title">S.S. 85 NOLU MUTLULAR OTOBÜS MİNİBÜS VE TAŞIYICILAR KOOPERATİFİ</div>
       
       <div class="arama-konteyner">
@@ -273,7 +274,7 @@
           <div class="kart-ust">
             <h4 class="hat-adi">Mut Kalesi</h4>
             <div class="tarihi-img">🏰</div>
-            <p class="guzergah" style="color:var(--metin)">Kale, dış ve iç olmak üzere iç içe iki kısımdan ibarettir. Kalenin dokuz tane burcu olmasına rağmen bu gün dört tanesi kalmıştır. [cite: 39, 42]</p>
+            <p class="guzergah" style="color:var(--metin)">Kale, dış ve iç olmak üzere iç içe iki kısımdan ibarettir. Kalenin dokuz tane burcu olmasına rağmen bu gün dört tanesi kalmıştır.</p>
             <button class="harita-btn" onclick="haritadaGoster('T1')">📍 Haritada Konumunu Gör</button>
           </div>
         </div>
@@ -282,7 +283,7 @@
           <div class="kart-ust">
             <h4 class="hat-adi">Alahan Manastırı</h4>
             <div class="tarihi-img">🏛️</div>
-            <p class="guzergah" style="color:var(--metin)">Orta Toroslarda 1300 m. yükseklikte ve Göksu Vadisine bakan dik bir yamaca oturtulmuştur. [cite: 46] M.S. 440-442 yıllarında yapılmış olduğu tahmin edilen Alahan Manastır Külliyesi, Batı Kilisesi, Manastır, Doğu Kilisesi, kayalara oyulmuş keşiş odacıkları ve çevredeki mezarlardan oluşmaktadır. [cite: 48]</p>
+            <p class="guzergah" style="color:var(--metin)">Orta Toroslarda 1300 m. yükseklikte ve Göksu Vadisine bakan dik bir yamaca oturtulmuştur. M.S. 440-442 yıllarında yapılmış olduğu tahmin edilen Alahan Manastır Külliyesi, Batı Kilisesi, Manastır, Doğu Kilisesi, kayalara oyulmuş keşiş odacıkları ve çevredeki mezarlardan oluşmaktadır.</p>
             <button class="harita-btn" onclick="haritadaGoster('T2')">📍 Haritada Konumunu Gör</button>
           </div>
         </div>
@@ -291,7 +292,7 @@
           <div class="kart-ust">
             <h4 class="hat-adi">Kilisetepe Höyüğü</h4>
             <div class="tarihi-img">🏺</div>
-            <p class="guzergah" style="color:var(--metin)">Mut İlçe merkezinin yaklaşık 19 kilometre güney doğusunda Kışla Köyü sınırları içinde Karaman-Mut- Silifke yolunun 500 metre güneyindedir. [cite: 62] Elde edilen buluntulardan hareketle Kilisetepe'nin gü nümüzden yaklaşık 7000 yıl önce bir yerleşim yeri olduğu tespit edilmiştir. [cite: 63]</p>
+            <p class="guzergah" style="color:var(--metin)">Mut İlçe merkezinin yaklaşık 19 kilometre güney doğusunda Kışla Köyü sınırları içindedir. Elde edilen buluntulardan hareketle Kilisetepe'nin günümüzden yaklaşık 7000 yıl önce bir yerleşim yeri olduğu tespit edilmiştir.</p>
             <button class="harita-btn" onclick="haritadaGoster('T4')">📍 Haritada Konumunu Gör</button>
           </div>
         </div>
@@ -300,7 +301,7 @@
           <div class="kart-ust">
             <h4 class="hat-adi">Balabolu Harabeleri</h4>
             <div class="tarihi-img">🏛️</div>
-            <p class="guzergah" style="color:var(--metin)">Mut'un batısında, 40 kilometre uzaklıkta Yalnızcabağ Köyü yakınlarında Değirmenlik Yaylası'ndadır. [cite: 83] Büyük bir antik yerleşim alanı olduğu görülmektedir. [cite: 84]</p>
+            <p class="guzergah" style="color:var(--metin)">Mut'un batısında, 40 kilometre uzaklıkta Yalnızcabağ Köyü yakınlarında Değirmenlik Yaylası'ndadır. Büyük bir antik yerleşim alanı olduğu görülmektedir.</p>
             <button class="harita-btn" onclick="haritadaGoster('T6')">📍 Haritada Konumunu Gör</button>
           </div>
         </div>
@@ -309,7 +310,7 @@
           <div class="kart-ust">
             <h4 class="hat-adi">Mavga Kalesi</h4>
             <div class="tarihi-img">⛰️</div>
-            <p class="guzergah" style="color:var(--metin)">Mut' a yaklaşık 16 km. uzaklıkta olup, Kozlar Yaylası yakınındadır. [cite: 65] Sağlam kalan tek burcundaki kitabeye göre Alaattin Keykubat'ın emri üzerine 1230 yıllarında Mimar Tuğrul tarafından yapılmıştır. [cite: 66]</p>
+            <p class="guzergah" style="color:var(--metin)">Mut' a yaklaşık 16 km. uzaklıkta olup, Kozlar Yaylası yakınındadır. Sağlam kalan tek burcundaki kitabeye göre Alaattin Keykubat'ın emri üzerine 1230 yıllarında Mimar Tuğrul tarafından yapılmıştır.</p>
             <button class="harita-btn" onclick="haritadaGoster('T5')">📍 Haritada Konumunu Gör</button>
           </div>
         </div>
@@ -378,7 +379,6 @@
       { c: [33.4450, 36.6520], code: 'U1', name: 'MYO Kampüs', color: '#8B5CF6' },
       { c: [33.4100, 36.6500], code: 'K1', name: 'Köselerli', color: '#F59E0B' },
       { c: [33.4500, 36.6300], code: 'S1', name: 'Sakız Köyü', color: '#3B82F6' },
-      // Tarihi Yerler Koordinatları
       { c: [33.4350, 36.6450], code: 'T1', name: 'Mut Kalesi', color: '#FCD34D' },
       { c: [33.3500, 36.7800], code: 'T2', name: 'Alahan Manastırı', color: '#FCD34D' },
       { c: [33.4400, 36.6300], code: 'T3', name: 'Karacaoğlan Anıtı', color: '#FCD34D' },
@@ -510,7 +510,7 @@
 
       listeHtml += `</ul>`;
       const sonucDiv = document.getElementById('plakaSonuc');
-      sonucDiv.innerHTML = bulundu ? listeHtml : `<p style="color:var(--metin-soluk)">Sistemde <strong>${arananBrut.toUpperCase()}</strong> plakasına ait sefer kaydı bulunamadı. Lütfen plakayı doğru yazdığınızdan emin olun (Örn: 33C7042).</p>`;
+      sonucDiv.innerHTML = bulundu ? listeHtml : `<p style="color:var(--metin-soluk)">Sistemde <strong>${arananBrut.toUpperCase()}</strong> plakasına ait sefer kaydı bulunamadı. Lütfen plakayı (Örn: 33 C 7042) doğru yazdığınızdan emin olun.</p>`;
       sonucDiv.style.display = 'block';
     }
 
@@ -519,16 +519,21 @@
     const mapMarkers = {};
 
     function switchView(viewId, el) {
+      // İçerikleri Gizle
       document.querySelectorAll('.content-area').forEach(v => v.classList.remove('active'));
+      // Hedefi Aç
       document.getElementById('view-' + viewId).classList.add('active');
       
+      // Menü Aktiflik Durumu Güncelleme
       document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      if(el) el.classList.add('active');
-      else {
+      if(el) {
+        el.classList.add('active');
+      } else {
         const targetNavs = document.querySelectorAll(`[onclick="switchView('${viewId}', this)"]`);
         targetNavs.forEach(nav => nav.classList.add('active'));
       }
 
+      // Harita yükleme işlemi
       if(viewId === 'harita' && !map) createMap();
     }
 
